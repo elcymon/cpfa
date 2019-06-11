@@ -1,0 +1,61 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+  <model name='m_litter1'>
+	  <static>0</static>
+	  <pose>0 0 0.025 0 0 0</pose><! needed to tell you where the robot should be at start of simulation>
+	  <link name='link'>
+		 <inertial>
+			<mass>0.001</mass>
+			<inertia>
+				<ixx>0.000006667</ixx>
+				<ixy>0</ixy>
+				<ixz>0</ixz>
+				<iyy>0.000006667</iyy>
+				<iyz>0</iyz>
+				<izz>0.000006667</izz>
+			</inertia>
+		</inertial>
+		<collision name='collision'>
+			<geometry>
+				<!--<<cylinder>
+					<radius>0.065</radius>
+					<length>0.05</length>
+					size>0.13 0.13 0.05</size>
+				</cylinder>-->
+				<box>
+					<size>0.1 0.1 0.001</size>
+				</box>
+			</geometry>
+			<surface>
+				<friction>
+					<ode>
+						<mu>1</mu>
+						<mu2>1</mu2>
+						<slip1>0</slip1>
+						<slip2>0</slip2>
+					</ode>
+				</friction>
+			</surface>
+		</collision><!---->
+		<visual name='visual'>
+			<geometry>
+				<!--<cylinder>
+					<radius>0.065</radius>
+					<length>0.05</length>
+					<size>0.13 0.13 0.05</size>
+				</cylinder>-->
+				<box>
+					<size>0.3 0.3 0.02</size><!---->
+				</box>
+			</geometry>
+			<material>
+				<ambient>01 0 0 01</ambient>
+				<diffuse>01 0 0 01</diffuse>
+				<specular>01 0 0 01</specular>
+				<emissive>01 0 0 01</emissive>
+			</material>
+		</visual>
+	  </link>
+	  <!--<plugin name='litter_plugin' filename = 'liblitter_plugin.so'/>-->
+	</model>
+</sdf>

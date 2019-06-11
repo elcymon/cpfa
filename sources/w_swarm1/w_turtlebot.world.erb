@@ -1,0 +1,99 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+	<%scale=2.5%>
+	<%b_length=20 * scale%><!--length of boundary-->
+	<%b_width=b_length%><!--width of boundary-->
+	<%b_thick=0.1%><!--boundary thickness-->
+	<%b_height=0.2%><!--boundary height-->
+	<world name='default'>
+	
+        <!-- Ground Plane -->
+        <include>
+            <uri>model://ground_plane</uri>
+        </include>
+        
+        <include>
+            <uri>model://sun</uri>
+        </include>
+        
+        <!--start: create boundary-->
+        <model name='boundary1'>
+            <static>1</static>
+            <pose>0 0 0 0 0 0</pose>
+            <link name='link'>
+                <collision name='collision1'>
+                    <pose>-<%=b_length/2+b_thick/2%> 0 0.0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size><%=b_thick%> <%=b_length+b_thick%> <%=b_height%></size>
+                        </box>
+                    </geometry>
+                </collision>
+                
+                <visual name='visual1'>
+                    <pose>-<%=b_length/2+b_thick/2%> 0 0.0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size><%=b_thick%> <%=b_length+b_thick%> <%=b_height%></size>
+                        </box>
+                    </geometry>
+                </visual>
+                
+                <collision name='collision2'>
+                    <pose><%=b_length/2+b_thick/2%> 0 0.0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size><%=b_thick%> <%=b_length+b_thick%> <%=b_height%></size>
+                        </box>
+                    </geometry>
+                </collision>
+                
+                <visual name='visual2'>
+                    <pose><%=b_length/2+b_thick/2%> 0 0.0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size><%=b_thick%> <%=b_length+b_thick%> <%=b_height%></size>
+                        </box>
+                    </geometry>
+                </visual>
+                
+                <collision name='collision3'>
+                    <pose>0 -<%=b_width/2%> 0.0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size><%=b_width%> <%=b_thick%> <%=b_height%></size>
+                        </box>
+                    </geometry>
+                </collision>
+                
+                <visual name='visual3'>
+                    <pose>0 -<%=b_width/2%> 0.0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size><%=b_width%> <%=b_thick%> <%=b_height%></size>
+                        </box>
+                    </geometry>
+                </visual>
+                
+                <collision name='collision4'>
+                    <pose>0 <%=b_width/2%> 0.0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size><%=b_width%> <%=b_thick%> <%=b_height%></size>
+                        </box>
+                    </geometry>
+                </collision>
+                
+                <visual name='visual4'>
+                    <pose>0 <%=b_width/2%> 0.0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size><%=b_width%> <%=b_thick%> <%=b_height%></size>
+                        </box>
+                    </geometry>
+                </visual>
+            </link>
+        </model>
+	
+	</world>
+</sdf>

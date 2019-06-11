@@ -1,0 +1,523 @@
+<!--Prefer Using this version.-->
+
+<%s=1%><!--scale -->
+<%cl=0.01%><!--chassis length -->
+<%cr=0.25*s%><!--chassis radius -->
+<%wr=0.0605*s%><!--wheel radius -->
+<%wl=wr%><!--wheel length -->
+<%mu=1%><!--friction coefficient on wheels range from 0 to 1 -->
+<%slip=1%><!--slip coefficient range from 0 to 1 -->
+<%m_ch=1%><!--chassis mass-->
+<%m_wh=1%><!--mass of revolute wheels-->
+<%m_cs=0.1%><!--mass of caster wheels-->
+<%collide_bitmask=1%>
+<?xml version='1.0'?>
+<sdf version='1.6'>
+  <model name='m_4wrobot'>
+	  <static>false</static>
+	  <pose>0 0 0 0 0 0</pose>
+	  <link name = 'chassis'>
+		  <pose>0 0 <%=2*wr+cl/2%> 0 0 0</pose>
+		  <inertial>
+			<mass><%=m_ch%></mass>
+			<inertia>
+				<ixx><%=1.0/12.0*m_ch*(3*cr**2+cl**2)%></ixx>
+				<ixy>0</ixy>
+				<ixz>0</ixz>
+				<iyy><%=1.0/12.0*m_ch*(3*cr**2+cl**2)%></iyy>
+				<iyz>0</iyz>
+				<izz><%=1.0/12.0*m_ch*(3*cr**2+cl**2)%></izz>
+			</inertia>
+		 </inertial>
+		  <visual name='visual'>
+			  <geometry>
+				  <cylinder>
+					  <radius><%=cr%></radius>
+					  <length><%=cl%></length>
+				  </cylinder>
+			  </geometry>
+			  <material>
+				<ambient>0.95 0.95 0.95 01</ambient>
+				<diffuse>0.95 0.95 0.95 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual1'>
+			  <pose><%=cr*0.8%> 0 0 0 0 0</pose>
+			  <geometry>
+				  <cylinder>
+					  <radius><%=cr/5%></radius>
+					  <length><%=wl/5%></length>
+				  </cylinder>
+			  </geometry>
+			  <material>
+				<ambient>0 0.7 0 01</ambient>
+				<diffuse>0 0.7 0 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <collision name='collision'>
+			  <!--<pose>0 0 <%=-wr%> 0 0 0</pose>-wr-cl/5-->
+			  <geometry>
+				  <cylinder>
+					  <radius><%=cr%></radius>
+					  <length><%=wr%></length><!--2*wr-->
+				  </cylinder>
+			  </geometry>
+			  <!--<surface>
+				<contact>
+					<collide_bitmask>0x<%=collide_bitmask%></collide_bitmask>
+				</contact>
+				<friction>
+					<ode>
+						<mu>0</mu>
+						<mu2>0</mu2>
+						<slip1>1</slip1>
+						<slip2>1</slip2>
+					</ode>
+				</friction>
+			</surface>-->
+		  </collision>
+		  <sensor name='chassis_contact' type='contact'>
+			  <contact>
+				  <collision>collision</collision>
+			  </contact>
+			  <update_rate>1</update_rate>
+			  <always_on>true</always_on>
+			  <visualize>false</visualize>
+		  </sensor>
+	  </link>
+	  <link name = 'wheelL'>
+		  <pose>0 <%=cr*0.8%> <%=wr%> 0 1.5705 1.5705</pose>
+	    <inertial>
+			<mass><%=m_wh%></mass>
+			<inertia>
+				<ixx><%=1.0/12.0*m_wh*(3*wr**2+wl**2)%></ixx>
+				<ixy>0</ixy>
+				<ixz>0</ixz>
+				<iyy><%=1.0/12.0*m_wh*(3*wr**2+wl**2)%></iyy>
+				<iyz>0</iyz>
+				<izz><%=1.0/12.0*m_wh*(3*wr**2+wl**2)%></izz>
+			</inertia>
+		 </inertial>
+		  <visual name = 'visual'>
+			  <geometry>
+				  <cylinder>
+					  <radius><%=wr%></radius>
+					  <length><%=wl%></length>
+				  </cylinder>
+			  </geometry>
+			  <material>
+				<ambient>0.2 0.2 0.2 01</ambient>
+				<diffuse>0.2 0.2 0.2 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual1'>
+			  <pose>0 <%=cr*0.2%> <%=wr/2%> 0 0 0</pose>
+			  <geometry>
+				  <cylinder>
+					  <radius><%=wr/6%></radius>
+					  <length><%=wl/2%></length>
+				  </cylinder>
+			  </geometry>
+			  <material>
+				<ambient>0 0.7 0 01</ambient>
+				<diffuse>0 0.7 0 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  
+		  <collision name = 'collision'>
+			  <geometry>
+				  <cylinder>
+					  <radius><%=wr%></radius>
+					  <length><%=wl%></length>
+				  </cylinder>
+			  </geometry>
+			  <!--<surface>
+				<contact>
+					<collide_bitmask>0x<%=collide_bitmask%></collide_bitmask>
+				</contact>
+				<friction>
+					<ode>
+						<mu><%=mu%></mu>
+						<mu2><%=mu%></mu2>
+						<slip1><%=slip%></slip1>
+						<slip2><%=slip%></slip2>
+					</ode>
+				</friction>
+			</surface>-->
+		  </collision>
+      </link>
+      
+      <joint type='revolute' name='L_joint'>
+		  <pose>0 0 <%=-wl/2.0%> 0 0 0</pose>
+		  <child>wheelL</child>
+		  <parent>chassis</parent>
+		  <axis>
+			  <xyz>0 0 1</xyz>
+		  </axis>
+		  <physics>
+			  <ode>
+				  <max_force>0</max_force>
+			  </ode>
+		  </physics>
+      </joint>
+      <link name = 'wheelR'>
+		  <pose>0 <%=-cr*0.8%> <%=wr%> 0 1.5705 1.5705</pose>
+		  <inertial>
+		    <mass><%=m_wh%></mass>
+			<inertia>
+				<ixx><%=1.0/12.0*m_wh*(3*wr**2+wl**2)%></ixx>
+				<ixy>0</ixy>
+				<ixz>0</ixz>
+				<iyy><%=1.0/12.0*m_wh*(3*wr**2+wl**2)%></iyy>
+				<iyz>0</iyz>
+				<izz><%=1.0/12.0*m_wh*(3*wr**2+wl**2)%></izz>
+			</inertia>
+		 </inertial>
+		  <visual name = 'visual'>
+			  <geometry>
+				  <cylinder>
+					  <radius><%=wr%></radius>
+					  <length><%=wl%></length>
+				  </cylinder>
+			  </geometry>
+			  <material>
+				<ambient>0.2 0.2 0.2 01</ambient>
+				<diffuse>0.2 0.2 0.2 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual1'>
+			  <pose>0 <%=cr*0.2%> <%=-wr/2%> 0 0 0</pose>
+			  <geometry>
+				  <cylinder>
+					  <radius><%=wr/6%></radius>
+					  <length><%=wl/2%></length>
+				  </cylinder>
+			  </geometry>
+			  <material>
+				<ambient>0 0.7 0 01</ambient>
+				<diffuse>0 0.7 0 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <collision name = 'collision'>
+			  <geometry>
+				  <cylinder>
+					  <radius><%=wr%></radius>
+					  <length><%=wl%></length>
+				  </cylinder>
+			  </geometry>
+			  <!--<surface>
+				<contact>
+					<collide_bitmask>0x<%=collide_bitmask%></collide_bitmask>
+				</contact>
+				<friction>
+					<ode>
+						<mu><%=mu%></mu>
+						<mu2><%=mu%></mu2>
+						<slip1><%=slip%></slip1>
+						<slip2><%=slip%></slip2>
+					</ode>
+				</friction>
+			</surface>-->
+		  </collision>
+      </link>
+      <joint type='revolute' name='R_joint'>
+		  <pose>0 0 <%=wl/2.0%> 0 0 0</pose>
+		  <child>wheelR</child>
+		  <parent>chassis</parent>
+		  <axis>
+			  <xyz>0 0 1</xyz>
+		  </axis>
+		  <physics>
+			  <ode>
+				  <max_force>0</max_force>
+			  </ode>
+		  </physics>
+      </joint>
+      <link name = 'wheelB'>
+		  <pose><%=-cr*0.6%> 0 <%=wr%> 0 1.5705 1.5705</pose>
+		  <inertial>
+			<mass><%=m_cs%></mass>
+			<inertia>
+				<ixx><%=2.0/5.0*m_cs*wr**2%></ixx>
+				<ixy>0</ixy>
+				<ixz>0</ixz>
+				<iyy><%=2.0/5.0*m_cs*wr**2%></iyy>
+				<iyz>0</iyz>
+				<izz><%=2.0/5.0*m_cs*wr**2%></izz>
+			</inertia>
+		 </inertial>
+		 <visual name = 'visual1'>
+			  <pose><%=wr%> 0 0 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual2'>
+			  <pose>0 <%=wr%> 0 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual3'>
+			  <pose>0 0 <%=wr%> 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual4'>
+			  <pose><%=-wr%> 0 0 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=-wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual5'>
+			  <pose>0 <%=-wr%> 0 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual6'>
+			  <pose>0 0 <%=-wr%> 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual'>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0.2 0.2 0.2 01</ambient>
+				<diffuse>0.2 0.2 0.2 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <collision name = 'collision'>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr%></radius>
+				  </sphere>
+			  </geometry>
+			  <!-- <surface>
+				  <contact>
+					<collide_bitmask>0x<%=collide_bitmask%></collide_bitmask>
+				  </contact>
+				  <friction>
+					  <ode>
+						  <mu><%=0%></mu>
+						  <mu2><%=0%></mu2>
+						  <slip1><%=slip%></slip1>
+						  <slip2><%=slip%></slip2>
+					  </ode>
+				  </friction>
+			  </surface>-->
+		  </collision>
+      </link>
+      <joint type='ball' name='B_joint'>
+		  <child>wheelB</child>
+		  <parent>chassis</parent>
+      </joint>
+      
+      <link name = 'wheelF'>
+		  <pose><%=cr*0.6%> 0 <%=wr%> 0 1.5705 1.5705</pose>
+		  <inertial>
+			<mass><%=m_cs%></mass>
+			<inertia>
+				<ixx><%=2.0/5.0*m_cs*wr**2%></ixx>
+				<ixy>0</ixy>
+				<ixz>0</ixz>
+				<iyy><%=2.0/5.0*m_cs*wr**2%></iyy>
+				<iyz>0</iyz>
+				<izz><%=2.0/5.0*m_cs*wr**2%></izz>
+			</inertia>
+		 </inertial>
+		 <visual name = 'visual1'>
+			  <pose><%=wr%> 0 0 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual2'>
+			  <pose>0 <%=wr%> 0 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual3'>
+			  <pose>0 0 <%=wr%> 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual4'>
+			  <pose><%=-wr%> 0 0 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=-wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual5'>
+			  <pose>0 <%=-wr%> 0 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual6'>
+			  <pose>0 0 <%=-wr%> 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual'>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0.2 0.2 0.2 01</ambient>
+				<diffuse>0.2 0.2 0.2 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <collision name = 'collision'>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr%></radius>
+				  </sphere>
+			  </geometry>
+			  <!-- <surface>
+				  <contact>
+					<collide_bitmask>0x<%=collide_bitmask%></collide_bitmask>
+				  </contact>
+				  <friction>
+					  <ode>
+						  <mu><%=0%></mu>
+						  <mu2><%=0%></mu2>
+						 <slip1><%=slip%></slip1>
+						  <slip2><%=slip%></slip2>
+					  </ode>
+				  </friction>
+			  </surface>-->
+		  </collision>
+      </link>
+      
+      <joint type='ball' name='F_joint'>
+		  <child>wheelF</child>
+		  <parent>chassis</parent>
+      </joint>
+      
+	 <plugin name='libmp_swarm1' filename='libmp_swarm1.so'/><!-- -->
+  </model>
+ </sdf>
