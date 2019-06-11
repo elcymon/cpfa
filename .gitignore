@@ -1,2 +1,4 @@
 build
 *.so
+.vscode
+world_governor
