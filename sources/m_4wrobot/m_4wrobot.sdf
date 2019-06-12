@@ -518,6 +518,6 @@
 		  <parent>chassis</parent>
       </joint>
       
-	 <plugin name='libmp_swarm1' filename='libmp_swarm1.so'/><!-- -->
+	 <plugin name='libmp_swarm1' filename='libmp_cpfa.so'/><!-- -->
   </model>
  </sdf>

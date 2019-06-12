@@ -15,6 +15,34 @@ namespace gazebo
 	class MP_CPFA : public ModelPlugin
 	{
 		private:
+            std::mutex mutex;
+            physics::JointPtr rwheel;
+            physics::JointPtr lwheel;
+
+            double rVel;
+
+            transport::NodePtr node;
+            
+            double desiredHeading;
+            std::string contactMsg;
+            transport::SubscriberPtr contactSub;
+            bool crashed;
+            double xCrash;
+            double yCrash;
+            // when robot has to go in a particular direction, it needs to make a detour to avoid obstacle
+
+
+            //WORKING WITH RANDOM NUMBERS
+            std::default_random_engine generator;
+            std::uniform_real_distribution<double> uformRand;
+            std::uniform_real_distribution<double>uformRandHeading;
+            double uformMin, uformMax;
+            std::normal_distribution<double> normalRandHeading;
+            double normalStddev, normalMean;
+
+            event::ConnectionPtr updateConnection;
+
+
         public : void Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
         {
             // this->updateConnection = event::Events::ConnectWorldUpdateBegin(
