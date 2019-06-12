@@ -45,13 +45,13 @@ namespace gazebo
 
         public : void Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
         {
-            // this->updateConnection = event::Events::ConnectWorldUpdateBegin(
-            //     boost::bind(&Nest_Plugin::OnUpdate, this, _1)
-            // );
+            this->updateConnection = event::Events::ConnectWorldUpdateBegin(
+                boost::bind(&MP_CPFA::OnUpdate, this, _1)
+            );
         }
         public: void OnUpdate(const common::UpdateInfo & _info)
         {
-            //std::lock_guard<std::mutex> lock(this->mutex);
+            std::lock_guard<std::mutex> lock(this->mutex);
         }
     };
 
