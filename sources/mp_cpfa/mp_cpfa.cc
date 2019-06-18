@@ -23,6 +23,8 @@ namespace gazebo
             double rVel;
             double baseProb;
             double turnAmount;
+            double Kp;
+            double wheel_separation;
 
             transport::NodePtr node;
             
@@ -51,6 +53,8 @@ namespace gazebo
             
             this->rwheel = this->model->GetJoint("R_joint");
             this->lwheel = this->model->GetJoint("L_joint");
+            this->wheel_separation = this->rwheel->GetAnchor(0).Distance(
+                                        this->lwheel->GetAnchor(0));
             
             this->node = transport::NodePtr(new transport::Node());
             this->node->Init();
@@ -144,9 +148,11 @@ namespace gazebo
             this->baseProb = 0.0025;
             this->turnAmount = 0;
             
-            this->desiredHeading = 0;
+            this->desiredHeading = 0;//this->model->GetWorldPose().rot.GetYaw();;
             
             this->crashed = false;
+
+            this->Kp = 10 * this->rVel;
             
             // this->xCrash;
             // this->yCrash;
@@ -166,27 +172,77 @@ namespace gazebo
             this->normalStddev = 1.5707;
             this->normalMean = 3.142;
         }
+        public: void rotate(double headingError)
+        {
+            if(headingError > 0)
+            {
+                this->lwheel->SetVelocity(0,-(this->rVel/2.0));
+                this->rwheel->SetVelocity(0,this->rVel/2.0);
+            }
+            else if(headingError < 0)
+            {
+                this->lwheel->SetVelocity(0,(this->rVel/2.0));
+                this->rwheel->SetVelocity(0,-(this->rVel/2.0));
+            }
+        }
+
+        public: void moveForward(double headingError)
+        {
+            double va = headingError * this->Kp;
+            double r = this->rVel + va * this->wheel_separation / 2.0;
+            double l = this->rVel - va * this->wheel_separation / 2.0;
+
+            if (r > this->rVel)
+                r = this->rVel;
+            if (r < 0)
+                r = 0;
+
+            if (l > this->rVel)
+                l = this->rVel;
+            if (l < 0)
+                l = 0;
+            
+            this->rwheel->SetVelocity(0,r);
+            this->lwheel->SetVelocity(0,l);
+        }
+
         public: void OnUpdate(const common::UpdateInfo & _info)
         {
             std::lock_guard<std::mutex> lock(this->mutex);
+            math::Quaternion myRot = this->model->GetWorldPose().rot;
+            this->desiredHeading = myRot.GetYaw();
+
             if(this->crashed)
             {//avoid obstacle: change direction
-
+                this->desiredHeading = this->desiredHeading + this->turnAmount;
+                
             }
             else {
                 //continue random walk
                 if(this->uformRand(this->generator) < this->baseProb)
                 {//randomly change desired direction
+                    double tempTurnAmount = this->normalRandHeading(this->generator);
+                    if(tempTurnAmount > 2 * M_PI) tempTurnAmount = 2 * M_PI;
 
+                    if(tempTurnAmount < 0.0) tempTurnAmount = 0.0;
+
+                    tempTurnAmount = this->normalize(tempTurnAmount);
+                    this->desiredHeading = this->desiredHeading + tempTurnAmount;
                 }
+                
             }
-            if(this->turnAmount < 0.09)
-            {//move straight
 
+            this->desiredHeading = this->normalize(this->desiredHeading);
+            double headingError = this->desiredHeading - myRot.GetYaw();
+            
+            if(headingError < 0.09)
+            {//move straight
+                this->moveForward(headingError);
             }
             else
             {
                 //turn in desired direction
+                this->rotate(headingError);
             }
         }
     };
