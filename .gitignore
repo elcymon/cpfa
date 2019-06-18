@@ -2,3 +2,5 @@ build
 *.so
 .vscode
 world_governor
+results/
+!results/.placeholder
