@@ -34,6 +34,7 @@ namespace gazebo
             bool crashed;
             double xCrash;
             double yCrash;
+            transport::PublisherPtr pubRobotData;
             // when robot has to go in a particular direction, it needs to make a detour to avoid obstacle
 
 
@@ -62,6 +63,7 @@ namespace gazebo
             this->contactMsg = "/gazebo/default/" + this->model->GetName() + 
                 "/chassis/chassis_contact/contacts";
             this->contactSub = this->node->Subscribe(this->contactMsg, &MP_CPFA::ContactCB,this);
+            this->pubRobotData = this->node->Advertise<msgs::Any>(this->model->GetName() + "/data");
 
             //Initialize Parameters
             this->initParams();
@@ -73,7 +75,11 @@ namespace gazebo
         public: void ContactCB(ConstContactsPtr &c)
         {
             std::lock_guard<std::mutex> lock(this->mutex);
-            if( !(this->crashed))
+            math::Quaternion myRot = this->model->GetWorldPose().rot;
+            double headingError = this->desiredHeading - myRot.GetYaw();
+            headingError = this->normalize(headingError);
+
+            if( !(this->crashed) && abs(headingError) < 0.09)
             {
                 msgs::Contacts contacts = *c;
                 for(int i = 0; i < (int) contacts.contact_size(); i++)
@@ -148,7 +154,8 @@ namespace gazebo
             this->baseProb = 0.0025;
             this->turnAmount = 0;
             
-            this->desiredHeading = 0;//this->model->GetWorldPose().rot.GetYaw();;
+            math::Quaternion myRot = this->model->GetWorldPose().rot;
+            this->desiredHeading = myRot.GetYaw();
             
             this->crashed = false;
 
@@ -167,23 +174,28 @@ namespace gazebo
             this->uformRand = std::uniform_real_distribution<double>(this->uformMin,this->uformMax);
             
 
-            this->normalRandHeading = std::normal_distribution<double>(this->normalMean,this->normalStddev);
-            
             this->normalStddev = 1.5707;
             this->normalMean = 3.142;
+            this->normalRandHeading = std::normal_distribution<double>(this->normalMean,this->normalStddev);
+            
+            
         }
-        public: void rotate(double headingError)
+        public: std::string rotate(double headingError)
         {
+            std::string dxn;
             if(headingError > 0)
             {
                 this->lwheel->SetVelocity(0,-(this->rVel/2.0));
                 this->rwheel->SetVelocity(0,this->rVel/2.0);
+                dxn = "turnLeft,";
             }
             else if(headingError < 0)
             {
                 this->lwheel->SetVelocity(0,(this->rVel/2.0));
                 this->rwheel->SetVelocity(0,-(this->rVel/2.0));
+                dxn = "turnRight,";
             }
+            return dxn;
         }
 
         public: void moveForward(double headingError)
@@ -210,12 +222,14 @@ namespace gazebo
         {
             std::lock_guard<std::mutex> lock(this->mutex);
             math::Quaternion myRot = this->model->GetWorldPose().rot;
-            this->desiredHeading = myRot.GetYaw();
+            // this->desiredHeading = myRot.GetYaw();
+            std::stringstream robotData;
 
             if(this->crashed)
             {//avoid obstacle: change direction
                 this->desiredHeading = this->desiredHeading + this->turnAmount;
-                
+                this->crashed = false;
+                robotData<<"crashed: "<<this->desiredHeading<<",";
             }
             else {
                 //continue random walk
@@ -228,22 +242,31 @@ namespace gazebo
 
                     tempTurnAmount = this->normalize(tempTurnAmount);
                     this->desiredHeading = this->desiredHeading + tempTurnAmount;
+                    robotData<<"Random turn: "<<this->desiredHeading<<",";
                 }
                 
             }
 
             this->desiredHeading = this->normalize(this->desiredHeading);
             double headingError = this->desiredHeading - myRot.GetYaw();
-            
-            if(headingError < 0.09)
+            headingError = this->normalize(headingError);
+            if(abs(headingError) < 0.09)
             {//move straight
                 this->moveForward(headingError);
+                robotData<<"move straight,";
             }
             else
             {
                 //turn in desired direction
-                this->rotate(headingError);
+                robotData<<this->rotate(headingError);
+                
             }
+            robotData<<this->desiredHeading<<" - "<<myRot.GetYaw()<<" = "<<headingError<<std::endl;
+            msgs::Any robotDataMsg;
+            robotDataMsg.set_type(msgs::Any::STRING);
+            robotDataMsg.set_string_value(robotData.str());
+            this->pubRobotData->Publish(robotDataMsg);
+
         }
     };
 

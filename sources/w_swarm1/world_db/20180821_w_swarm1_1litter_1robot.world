@@ -64,7 +64,7 @@
 	<!--end: generate litter locations-->
 	
 	<!--start: create boundary-->
-	<model name='boundary1'>
+	<!-- <model name='boundary1'>
 		<static>1</static>
 		<pose>0 0 0 0 0 0</pose>
 		<link name='link'>
@@ -140,8 +140,84 @@
 				</geometry>
 			</visual>
 		</link>
+	</model> -->
+	<model name='boundary1'>
+		<static>1</static>
+		<pose>0 0 0 0 0 0</pose>
+		<link name='link'>
+			<collision name='collision1'>
+				<pose>-5.05 0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>0.1 50.1 1</size>
+					</box>
+				</geometry>
+			</collision>
+			
+			<visual name='visual1'>
+				<pose>-5.05 0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>0.1 50.1 1</size>
+					</box>
+				</geometry>
+			</visual>
+			
+			<collision name='collision2'>
+				<pose>5.05 0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>0.1 50.1 1</size>
+					</box>
+				</geometry>
+			</collision>
+			
+			<visual name='visual2'>
+				<pose>5.05 0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>0.1 50.1 1</size>
+					</box>
+				</geometry>
+			</visual>
+			
+			<collision name='collision3'>
+				<pose>0 -5.0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>50.0 0.1 1</size>
+					</box>
+				</geometry>
+			</collision>
+			
+			<visual name='visual3'>
+				<pose>0 -5.0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>50.0 0.1 1</size>
+					</box>
+				</geometry>
+			</visual>
+			
+			<collision name='collision4'>
+				<pose>0 5.0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>50.0 0.1 1</size>
+					</box>
+				</geometry>
+			</collision>
+			
+			<visual name='visual4'>
+				<pose>0 5.0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>50.0 0.1 1</size>
+					</box>
+				</geometry>
+			</visual>
+		</link>
 	</model>
-	
 	
 	<!--
 	<include>
