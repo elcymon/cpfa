@@ -23,6 +23,10 @@ port_number=$(($SGE_TASK_ID + $prev_ID_end + 1))
 echo world_name: $world_name, experiment: $experiment, row_shift: $row_shift, prev_ID_end: $prev_ID_end, line_number: $line_number, port_number: $port_number
 mkdir -p $local_loc/$JOB_ID.$SGE_TASK_ID.24core-128G.q $folder/results
 
-singularity exec --bind $folder/results:$PWD/results,$folder/results:$folder/swarm_sim*/results,$local_loc:/local \
-../swarm_sim/gazebo-libgazebo7-xenial.simg \
-python3 hpc_start_simulation2.py $world_name $experiment $line_number $port_number
+# singularity exec --bind $folder/results:$PWD/results,$folder/results:$folder/swarm_sim*/results,$local_loc:/local \
+# ../swarm_sim/20190708-libgazebo7-xenial.simg \
+# python3 hpc_start_simulation2.py $world_name $experiment $line_number $port_number
+
+
+world_path=$PWD/sources/w_swarm1/world_db/20180208_w_swarm1_circular_one_region_cluster.world
+singularity exec --bind $folder:$PWD,$local_loc:/local ../swarm_sim/20190708-libgazebo7-xenial.simg  gazebo --verbose $world_path & $PWD/world_governor $experiment-OneCluster $line_number

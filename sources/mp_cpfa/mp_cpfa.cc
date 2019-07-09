@@ -8,8 +8,33 @@
 #include <iostream> //needed in order to use cout
 #include <mutex>
 #include <unistd.h>
-using namespace std;
+#include <ctime>
 
+using namespace std;
+struct RobotState {
+        double baseProb;
+        double turnAmount;
+        double desiredHeading;
+        bool crashed;
+        double xCrash;
+        double yCrash;
+        RobotState() {
+            //default constructor
+        }
+        RobotState(double baseProb, double yaw) {
+            this->baseProb = baseProb;
+            this->turnAmount = 0;
+            this->desiredHeading = yaw;
+            this->crashed = false;
+            this->xCrash = 0;
+            this->yCrash = 0;
+
+        }
+
+};
+// struct CPFA {
+//     /* This class implements the CPFA algorithm */
+// };
 namespace gazebo
 {
 	class MP_CPFA : public ModelPlugin
@@ -21,19 +46,13 @@ namespace gazebo
             physics::JointPtr lwheel;
 
             double rVel;
-            double baseProb;
-            double turnAmount;
             double Kp;
             double wheel_separation;
-
+            RobotState myState;
+            
             transport::NodePtr node;
             
-            double desiredHeading;
-            std::string contactMsg;
             transport::SubscriberPtr contactSub;
-            bool crashed;
-            double xCrash;
-            double yCrash;
             transport::PublisherPtr pubRobotData;
             // when robot has to go in a particular direction, it needs to make a detour to avoid obstacle
 
@@ -60,9 +79,9 @@ namespace gazebo
             this->node = transport::NodePtr(new transport::Node());
             this->node->Init();
             
-            this->contactMsg = "/gazebo/default/" + this->model->GetName() + 
+            std:: string contactMsg = "/gazebo/default/" + this->model->GetName() + 
                 "/chassis/chassis_contact/contacts";
-            this->contactSub = this->node->Subscribe(this->contactMsg, &MP_CPFA::ContactCB,this);
+            this->contactSub = this->node->Subscribe(contactMsg, &MP_CPFA::ContactCB,this);
             this->pubRobotData = this->node->Advertise<msgs::Any>(this->model->GetName() + "/data");
 
             //Initialize Parameters
@@ -76,10 +95,10 @@ namespace gazebo
         {
             std::lock_guard<std::mutex> lock(this->mutex);
             math::Quaternion myRot = this->model->GetWorldPose().rot;
-            double headingError = this->desiredHeading - myRot.GetYaw();
+            double headingError = this->myState.desiredHeading - myRot.GetYaw();
             headingError = this->normalize(headingError);
 
-            if( !(this->crashed) && abs(headingError) < 0.09)
+            if( !(this->myState.crashed) && abs(headingError) < 0.09)
             {
                 msgs::Contacts contacts = *c;
                 for(int i = 0; i < (int) contacts.contact_size(); i++)
@@ -98,11 +117,11 @@ namespace gazebo
                         {
                             if (contacts.contact(i).position(j).z() > 0.004)
                             {
-                                this->xCrash = contacts.contact(i).position(j).x();
-                                this->yCrash = contacts.contact(i).position(j).y();
-                                this->turnAmount = this->avoidObstacle(this->xCrash,
-                                    this->yCrash, this->model->GetWorldPose());
-                                this->crashed = true;
+                                this->myState.xCrash = contacts.contact(i).position(j).x();
+                                this->myState.yCrash = contacts.contact(i).position(j).y();
+                                this->myState.turnAmount = this->avoidObstacle(this->myState.xCrash,
+                                    this->myState.yCrash, this->model->GetWorldPose());
+                                this->myState.crashed = true;
                                 return;
                             }
                         }
@@ -151,23 +170,28 @@ namespace gazebo
         public : void initParams()
         {
             this->rVel = 10.0;
-            this->baseProb = 0.0025;
-            this->turnAmount = 0;
+            // this->myState.baseProb = 0.0025;
+            // this->myState.turnAmount = 0;
             
             math::Quaternion myRot = this->model->GetWorldPose().rot;
-            this->desiredHeading = myRot.GetYaw();
+            // this->myState.desiredHeading = myRot.GetYaw();
             
-            this->crashed = false;
+            // this->myState.crashed = false;
+            myState = RobotState(0.0025,myRot.GetYaw());
 
             this->Kp = 10 * this->rVel;
             
-            // this->xCrash;
-            // this->yCrash;
+            // this->myState.xCrash;
+            // this->myState.yCrash;
             
             // the seed for the random number generation
-            double xPos = abs(this->model->GetWorldPose().pos.x);
-            double yPos = abs(this->model->GetWorldPose().pos.y);
-            this->generator = std::default_random_engine( xPos * yPos);
+            std::string rName = this->model->GetName();
+            int robNum = stoi(rName.substr(9));
+            std::time_t currTime = std::time(nullptr);
+            robNum = (int)  currTime / robNum;
+            // int xPos = (int) abs(this->model->GetWorldPose().pos.x);
+            // int yPos = (int) abs(this->model->GetWorldPose().pos.y);
+            this->generator = std::default_random_engine(robNum);
 
             this->uformMin = 0;
             this->uformMax = 1;
@@ -222,18 +246,18 @@ namespace gazebo
         {
             std::lock_guard<std::mutex> lock(this->mutex);
             math::Quaternion myRot = this->model->GetWorldPose().rot;
-            // this->desiredHeading = myRot.GetYaw();
+            // this->myState.desiredHeading = myRot.GetYaw();
             std::stringstream robotData;
 
-            if(this->crashed)
+            if(this->myState.crashed)
             {//avoid obstacle: change direction
-                this->desiredHeading = this->desiredHeading + this->turnAmount;
-                this->crashed = false;
-                robotData<<"crashed: "<<this->desiredHeading<<",";
+                this->myState.desiredHeading = this->myState.desiredHeading + this->myState.turnAmount;
+                this->myState.crashed = false;
+                robotData<<"crashed: "<<this->myState.desiredHeading<<",";
             }
             else {
                 //continue random walk
-                if(this->uformRand(this->generator) < this->baseProb)
+                if(this->uformRand(this->generator) < this->myState.baseProb)
                 {//randomly change desired direction
                     double tempTurnAmount = this->normalRandHeading(this->generator);
                     if(tempTurnAmount > 2 * M_PI) tempTurnAmount = 2 * M_PI;
@@ -241,14 +265,14 @@ namespace gazebo
                     if(tempTurnAmount < 0.0) tempTurnAmount = 0.0;
 
                     tempTurnAmount = this->normalize(tempTurnAmount);
-                    this->desiredHeading = this->desiredHeading + tempTurnAmount;
-                    robotData<<"Random turn: "<<this->desiredHeading<<",";
+                    this->myState.desiredHeading = this->myState.desiredHeading + tempTurnAmount;
+                    robotData<<"Random turn: "<<this->myState.desiredHeading<<",";
                 }
                 
             }
 
-            this->desiredHeading = this->normalize(this->desiredHeading);
-            double headingError = this->desiredHeading - myRot.GetYaw();
+            this->myState.desiredHeading = this->normalize(this->myState.desiredHeading);
+            double headingError = this->myState.desiredHeading - myRot.GetYaw();
             headingError = this->normalize(headingError);
             if(abs(headingError) < 0.09)
             {//move straight
@@ -261,7 +285,7 @@ namespace gazebo
                 robotData<<this->rotate(headingError);
                 
             }
-            robotData<<this->desiredHeading<<" - "<<myRot.GetYaw()<<" = "<<headingError<<std::endl;
+            robotData<<this->myState.desiredHeading<<" - "<<myRot.GetYaw()<<" = "<<headingError<<std::endl;
             msgs::Any robotDataMsg;
             robotDataMsg.set_type(msgs::Any::STRING);
             robotDataMsg.set_string_value(robotData.str());
@@ -273,3 +297,4 @@ namespace gazebo
     // Register this plugin with the simulator
     GZ_REGISTER_MODEL_PLUGIN(MP_CPFA)
 }
+
