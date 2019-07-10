@@ -11,32 +11,125 @@
 #include <ctime>
 
 using namespace std;
-struct RobotState {
+
+namespace gazebo
+{
+    struct Utils{
+        //Utility Functions
+        double normalize(double angle){
+            math::Angle dAngle(angle);
+            dAngle.Normalize();
+            return dAngle.Radian();
+        }
+        double dxy(math::Vector3 A, math::Vector3 B) {
+            A.z = 0;
+            B.z = 0;
+            return A.Distance(B);
+        }
+    };
+    
+
+    struct RobotState {
+        Utils utils;
         double baseProb;
         double turnAmount;
         double desiredHeading;
         bool crashed;
         double xCrash;
         double yCrash;
+        std::string action;//stop,forward,turn-right,turn-left,?reverse
+        std::string state;//search,acquire,obstacle-avoidance,go-home
+        
+        gazebo::physics::ModelPtr nearestLitter;
+        int seenLitter;
+        int allLitterPicked;
+        int maxCapacity;
+        int currLitterPicked;
+        double litterSensingRange;
+        double fieldOfView;
+
         RobotState() {
             //default constructor
         }
-        RobotState(double baseProb, double yaw) {
+        RobotState(double baseProb, double yaw, int maxCapacity,
+                    double litterSensingRange, double fieldOfView) {
             this->baseProb = baseProb;
-            this->turnAmount = 0;
             this->desiredHeading = yaw;
+            this->maxCapacity = maxCapacity;
+            this->litterSensingRange = litterSensingRange;
+            this->fieldOfView = fieldOfView;
+
+            this->turnAmount = 0;
             this->crashed = false;
             this->xCrash = 0;
             this->yCrash = 0;
+            this->action = "stop";
+            this->state = "search";
+            
+            this->nearestLitter = nullptr;
+            this->seenLitter = 0;
+            this->allLitterPicked = 0;
+            this->currLitterPicked = 0;
 
         }
+        std::string state2string() {
+            std::stringstream robotData;
+            robotData <<"baseProb: "<<this->baseProb<<", "
+                    <<"turnAmount: "<<this->turnAmount<<", "
+                    <<"desiredHeading: "<<this->desiredHeading<<", "
+                    <<"crashed: "<<this->crashed<<", "
+                    <<"xCrash: "<<this->xCrash<<", "
+                    <<"yCrash: "<<this->yCrash<<", "
+                    <<"action: "<<this->action<<", "
+                    <<"state: "<<this->state<<", "
+                    <<"seenLitter: "<<this->seenLitter<<", "
+                    <<"allLitterPicked: "<<this->allLitterPicked<<", "
+                    <<"maxCapacity: "<<this->maxCapacity<<", "
+                    <<"currLitterPicked: "<<this->currLitterPicked<<", "
+                    <<"litterSensingRange: "<<this->litterSensingRange<<", "
+                    <<"fieldOfView: "<<this->fieldOfView//<<", "
+                    ;
+            return robotData.str();
+        }
 
-};
-// struct CPFA {
-//     /* This class implements the CPFA algorithm */
-// };
-namespace gazebo
-{
+    };
+    struct RW {
+        Utils utils;
+        std::default_random_engine generator;
+        std::uniform_real_distribution<double> uformRand;
+        std::normal_distribution<double> normalRandHeading;
+        RW(std::default_random_engine generator,
+            std::uniform_real_distribution<double> uformRand,
+            std::normal_distribution<double> normalRandHeading) {
+
+                this->generator = generator;
+                this->uformRand = uformRand;
+                this->normalRandHeading = normalRandHeading;
+        }
+        RW() {
+            //default constructor
+        }
+
+        void updateHeading (RobotState* currState){
+            
+            if(this->uformRand(this->generator) < currState->baseProb)
+            {//randomly change desired direction
+                double tempTurnAmount = this->normalRandHeading(this->generator);
+                if(tempTurnAmount > 2 * M_PI) tempTurnAmount = 2 * M_PI;
+
+                if(tempTurnAmount < 0.0) tempTurnAmount = 0.0;
+
+                tempTurnAmount = (this->utils).normalize(tempTurnAmount);
+                currState->desiredHeading = currState->desiredHeading + tempTurnAmount;
+            }
+            
+        }
+                
+    };
+
+    // struct CPFA {
+    //     /* This class implements the CPFA algorithm */
+    // };
 	class MP_CPFA : public ModelPlugin
 	{
 		private:
@@ -49,6 +142,8 @@ namespace gazebo
             double Kp;
             double wheel_separation;
             RobotState myState;
+            RW randomWalk;
+            Utils utils;
             
             transport::NodePtr node;
             
@@ -94,11 +189,11 @@ namespace gazebo
         public: void ContactCB(ConstContactsPtr &c)
         {
             std::lock_guard<std::mutex> lock(this->mutex);
-            math::Quaternion myRot = this->model->GetWorldPose().rot;
-            double headingError = this->myState.desiredHeading - myRot.GetYaw();
-            headingError = this->normalize(headingError);
+            math::Quaternion myRot = (this->model->GetWorldPose()).rot;
+            double headingError = (this->myState).desiredHeading - myRot.GetYaw();
+            headingError = (this->utils).normalize(headingError);
 
-            if( !(this->myState.crashed) && abs(headingError) < 0.09)
+            if( !((this->myState).crashed) && abs(headingError) < 0.09)
             {
                 msgs::Contacts contacts = *c;
                 for(int i = 0; i < (int) contacts.contact_size(); i++)
@@ -117,11 +212,11 @@ namespace gazebo
                         {
                             if (contacts.contact(i).position(j).z() > 0.004)
                             {
-                                this->myState.xCrash = contacts.contact(i).position(j).x();
-                                this->myState.yCrash = contacts.contact(i).position(j).y();
-                                this->myState.turnAmount = this->avoidObstacle(this->myState.xCrash,
-                                    this->myState.yCrash, this->model->GetWorldPose());
-                                this->myState.crashed = true;
+                                (this->myState).xCrash = contacts.contact(i).position(j).x();
+                                (this->myState).yCrash = contacts.contact(i).position(j).y();
+                                (this->myState).turnAmount = this->avoidObstacle((this->myState).xCrash,
+                                    (this->myState).yCrash, this->model->GetWorldPose());
+                                (this->myState).crashed = true;
                                 return;
                             }
                         }
@@ -138,7 +233,7 @@ namespace gazebo
             double yc = myPos.pos.y;
             double obstacleLoc = atan2(y - yc, x - xc);
             double dtheta = yaw - obstacleLoc;
-            dtheta = this->normalize(dtheta);
+            dtheta = (this->utils).normalize(dtheta);
 
             if(abs(dtheta) < M_PI / 2.0)
             {
@@ -153,44 +248,64 @@ namespace gazebo
                 else
                 {
                     double x = this->uformRand(this->generator) * M_PI + M_PI / 2.0;
-                    turnRequired = this->normalize(x);
+                    turnRequired = (this->utils).normalize(x);
                 }
                 
             }
             return turnRequired;
         }
         
-        public : double normalize(double angle)
-        {
-            math::Angle dAngle(angle);
-            dAngle.Normalize();
-            return dAngle.Radian();
-        }
+        public: void litterSensor(RobotState* myState, 
+                                gazebo::physics::ModelPtr myModel, 
+                                gazebo::physics::WorldPtr myWorld) {
+            //sense presence of litter and update robotState
+            gazebo::physics::Model_V models = myWorld->GetModels();
 
+            gazebo::math::Pose my_pose = myModel->GetWorldPose();
+            gazebo::math::Vector3 my_pos = my_pose.pos;
+            double my_yaw = my_pose.rot.GetYaw();
+            int seenLitter = 0;
+
+            for (auto m : models) {//search through models in world
+                std::string m_name = m->GetName();
+                if(m_name.find("litter") != std::string::npos) {
+                    gazebo::math::Vector3 m_pos = m->GetWorldPose().pos;
+                    double dist = (this->utils).dxy(my_pos,m_pos);//linear distance
+                    double lit_or = (this->utils).normalize(atan2(my_pos.y - m_pos.y, my_pos.x - m_pos.x))
+                                    - my_yaw; //orientation of litter wrt robot
+                    if((dist <= myState->litterSensingRange) and //linear distance within sensing range
+                        (lit_or >= -myState->fieldOfView/2 and lit_or <= myState->fieldOfView/2)){//and within field of view
+                        //litter within sensing range
+                        seenLitter += 1;//increment litter
+                    }
+                }
+            }
+            myState->seenLitter = seenLitter;//update litter count
+
+        }
         public : void initParams()
         {
             this->rVel = 10.0;
-            // this->myState.baseProb = 0.0025;
-            // this->myState.turnAmount = 0;
+            // (this->myState).baseProb = 0.0025;
+            // (this->myState).turnAmount = 0;
             
-            math::Quaternion myRot = this->model->GetWorldPose().rot;
-            // this->myState.desiredHeading = myRot.GetYaw();
+            math::Quaternion myRot = (this->model->GetWorldPose()).rot;
+            // (this->myState).desiredHeading = myRot.GetYaw();
             
-            // this->myState.crashed = false;
-            myState = RobotState(0.0025,myRot.GetYaw());
-
+            // (this->myState).crashed = false;
+            
             this->Kp = 10 * this->rVel;
             
-            // this->myState.xCrash;
-            // this->myState.yCrash;
+            // (this->myState).xCrash;
+            // (this->myState).yCrash;
             
             // the seed for the random number generation
             std::string rName = this->model->GetName();
             int robNum = stoi(rName.substr(9));
             std::time_t currTime = std::time(nullptr);
             robNum = (int)  currTime / robNum;
-            // int xPos = (int) abs(this->model->GetWorldPose().pos.x);
-            // int yPos = (int) abs(this->model->GetWorldPose().pos.y);
+            // int xPos = (int) abs((this->model->GetWorldPose()).pos.x);
+            // int yPos = (int) abs((this->model->GetWorldPose()).pos.y);
             this->generator = std::default_random_engine(robNum);
 
             this->uformMin = 0;
@@ -201,7 +316,12 @@ namespace gazebo
             this->normalStddev = 1.5707;
             this->normalMean = 3.142;
             this->normalRandHeading = std::normal_distribution<double>(this->normalMean,this->normalStddev);
-            
+
+            //initialize state object            
+            this->myState = RobotState(0.0025,myRot.GetYaw(),1000,15,M_PI * 2);
+            //update algorithm object
+            this->randomWalk = RW(this->generator,this->uformRand,this->normalRandHeading);
+
             
         }
         public: std::string rotate(double headingError)
@@ -211,13 +331,13 @@ namespace gazebo
             {
                 this->lwheel->SetVelocity(0,-(this->rVel/2.0));
                 this->rwheel->SetVelocity(0,this->rVel/2.0);
-                dxn = "turnLeft,";
+                dxn = "turn-left";
             }
             else if(headingError < 0)
             {
                 this->lwheel->SetVelocity(0,(this->rVel/2.0));
                 this->rwheel->SetVelocity(0,-(this->rVel/2.0));
-                dxn = "turnRight,";
+                dxn = "turn-right";
             }
             return dxn;
         }
@@ -245,52 +365,63 @@ namespace gazebo
         public: void OnUpdate(const common::UpdateInfo & _info)
         {
             std::lock_guard<std::mutex> lock(this->mutex);
-            math::Quaternion myRot = this->model->GetWorldPose().rot;
-            // this->myState.desiredHeading = myRot.GetYaw();
-            std::stringstream robotData;
+            math::Quaternion myRot = (this->model->GetWorldPose()).rot;
+            // (this->myState).desiredHeading = myRot.GetYaw();
+            // std::stringstream robotData;
 
-            if(this->myState.crashed)
-            {//avoid obstacle: change direction
-                this->myState.desiredHeading = this->myState.desiredHeading + this->myState.turnAmount;
-                this->myState.crashed = false;
-                robotData<<"crashed: "<<this->myState.desiredHeading<<",";
+            //sense presence of litter
+            this->litterSensor(&(this->myState), this->model, this->model->GetWorld());
+
+            if((this->myState).crashed)
+            {//avoid obstacle: change direction; state=obstacle-avoidance
+                (this->myState).desiredHeading = (this->myState).desiredHeading + (this->myState).turnAmount;
+                (this->myState).crashed = false;
+                (this->myState).state = "obstacle-avoidance";
+
+                //robotData<<"crashed: "<<(this->myState).desiredHeading<<",";
             }
+            // else if() {
+            //     //capacity is full, to toward home: state=go-home
+            // }
+            // else if() {
+            //     //litter found, go toward closest litter: state=acquire
+            // }
             else {
-                //continue random walk
-                if(this->uformRand(this->generator) < this->myState.baseProb)
-                {//randomly change desired direction
-                    double tempTurnAmount = this->normalRandHeading(this->generator);
-                    if(tempTurnAmount > 2 * M_PI) tempTurnAmount = 2 * M_PI;
-
-                    if(tempTurnAmount < 0.0) tempTurnAmount = 0.0;
-
-                    tempTurnAmount = this->normalize(tempTurnAmount);
-                    this->myState.desiredHeading = this->myState.desiredHeading + tempTurnAmount;
-                    robotData<<"Random turn: "<<this->myState.desiredHeading<<",";
-                }
+                //Execute Control Algorithm: state=search; RW, 
+                (this->randomWalk).updateHeading(&(this->myState));
                 
+                (this->myState).state = "search";
+                //robotData<<"Random turn: "<<(this->myState).desiredHeading<<",";                
             }
 
-            this->myState.desiredHeading = this->normalize(this->myState.desiredHeading);
-            double headingError = this->myState.desiredHeading - myRot.GetYaw();
-            headingError = this->normalize(headingError);
+            (this->myState).desiredHeading = (this->utils).normalize((this->myState).desiredHeading);
+            double headingError = (this->myState).desiredHeading - myRot.GetYaw();
+            headingError = (this->utils).normalize(headingError);
             if(abs(headingError) < 0.09)
             {//move straight
                 this->moveForward(headingError);
-                robotData<<"move straight,";
+                (this->myState).action = "forward";
+                //robotData<<"move straight,";
             }
             else
             {
                 //turn in desired direction
-                robotData<<this->rotate(headingError);
+                (this->myState).action = this->rotate(headingError);
                 
             }
-            robotData<<this->myState.desiredHeading<<" - "<<myRot.GetYaw()<<" = "<<headingError<<std::endl;
+            // robotData<<(this->myState).state<<","<<(this->myState).action<<": "
+            //     <<(this->myState).desiredHeading<<" - "<<myRot.GetYaw()<<" = "
+            //     <<headingError<<std::endl;
+            std::string robotDataStr = (this->myState).state2string();
             msgs::Any robotDataMsg;
             robotDataMsg.set_type(msgs::Any::STRING);
-            robotDataMsg.set_string_value(robotData.str());
+            robotDataMsg.set_string_value(robotDataStr);
+            // robotDataMsg.set_string_value(robotData.str());
             this->pubRobotData->Publish(robotDataMsg);
-
+            std::string myName  = this->model->GetName();
+            if (myName.find("robot18") != std::string::npos) {
+                std::cout<<"seen litter: "<<(this->myState).seenLitter<<std::endl;
+            }
         }
     };
 
