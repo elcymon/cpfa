@@ -3,4 +3,5 @@ build
 .vscode
 world_governor
 results/
+!world_governor/
 !results/.placeholder

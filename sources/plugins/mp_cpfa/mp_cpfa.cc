@@ -27,10 +27,123 @@ namespace gazebo
             return A.Distance(B);
         }
     };
+    struct ColorObject {
+        msgs::Color *colMsg;
+        msgs::Color *diffMsg;
+        msgs::Visual visMsg;
+        msgs::Material *materialMsg;
+        gazebo::transport::PublisherPtr publishColor, visMsgPub;
+        gazebo::transport::NodePtr node;
+        gazebo::common::Color color;
+
+        float red, green, blue, alpha;
+
+
+        //constructor
+        ColorObject(){
+            //default constructor
+        }
+        ColorObject(double red, double green, double blue, double alpha){
+            
+            // gazebo::common::Color color(red,green,blue,alpha);
+            // this->colMsg = new gazebo::msgs::Color(gazebo::msgs::Convert(color));
+            // this->diffMsg = new gazebo::msgs::Color(*(this->colMsg));
+            this->red = red;
+            this->green = green;
+            this->blue = blue;
+            this->alpha = alpha;
+
+            this->node = transport::NodePtr(new transport::Node());
+            this->node->Init();
+
+            this->publishColor = this->node->Advertise<msgs::Visual>("/gazebo/default/visual");
+            this->visMsgPub = this->node->Advertise<msgs::Visual>("/myVis");
+        }
+        void apply_color(std::string linkName, physics::ModelPtr modelPtr) {
+            // std::cout<<"start apply on "<<modelPtr->GetName();
+
+            // this->color = gazebo::common::Color(this->red,this->green,this->blue,this->alpha);
+            // this->colMsg = new gazebo::msgs::Color(gazebo::msgs::Convert(color));
+            // this->diffMsg = new gazebo::msgs::Color(*(this->colMsg));
+
+
+            gazebo::physics::LinkPtr link = modelPtr->GetLink(linkName);
+            
+            sdf::ElementPtr sdf = link->GetSDF();
+            // // std::cout<<"\nOld Link: "<<link->GetSDF()->ToString("")<<std::endl;
+            sdf = sdf->GetElement("visual");
+            sdf = sdf->GetElement("material");
+            sdf::ElementPtr ambientSDF = sdf->GetElement("ambient");
+            sdf::ParamPtr paramPtr = ambientSDF->GetValue();
+            gazebo::common::Color currentColor;
+            paramPtr->Get(currentColor);
+            // std::cout<<ccc.r<<ccc.g<<ccc.b<<std::endl;
+
+            // sdf::ElementPtr sdf = link->GetSDF();
+            // GZ_ASSERT(sdf->HasElement("visual"), "Malformed Link Element");
+            // sdf = sdf->GetElement("visual");
+            // GZ_ASSERT(sdf->HasAttribute("name"), "Malformed Visual element");
+            // std::string visualName = sdf->Get<std::string>("name");
+
+            this->visMsg = link->GetVisualMessage("visual");
+            
+
+            this->visMsg.set_name(link->GetScopedName());
+            this->visMsg.set_parent_name(modelPtr->GetScopedName());
+
+            this->materialMsg = this->visMsg.mutable_material();
+            msgs::Color *ambient = this->materialMsg->mutable_ambient();
+            if(currentColor.r == this->red && 
+                currentColor.g == this->green && 
+                currentColor.b == this->blue) {
+                    //std::cout<<"No Color Change"<<std::endl;
+                    return;
+                }
+            // this->visMsgPub->Publish(this->visMsg);
+            ambient->set_r(this->red);
+            ambient->set_g(this->green);
+            ambient->set_b(this->blue);
+            ambient->set_a(this->alpha);
+            // std::cout<<visualName<<(ambient->r())<<(ambient->g())<<(ambient->b())<<" "<<
+            //     this->red<<this->green<<this->blue<<std::endl;
+
+            
+            // sdf::ElementPtr diffuse = sdf->GetElement("diffuse");
+            // sdf::ElementPtr specular = sdf->GetElement("specular");
+            // sdf::ElementPtr emissive = sdf->GetElement("emissive");
+
+            // ambient->Set(this->color);
+            // diffuse->Set(this->color);
+            // specular->Set(this->color);
+            // emissive->Set(this->color);
+            
+            // modelPtr->UpdateParameters(modelPtr->GetSDF());
+            // std::cout<<modelPtr->GetSDF()->ToString("")<<std::endl;
+            // std::cout<<this->red<<this->green<<this->blue<< ambient->ToString("")<<std::endl;
+            // std::cout<<"\nNew Link: "<<link->GetSDF()->ToString("")<<std::endl;
+            // std::cout<<sdf->HasElement("ambient")<<std::endl;
+            // this->materialMsg->clear_ambient();
+            // this->materialMsg->clear_diffuse();
+            // this->materialMsg->set_allocated_ambient(this->colMsg);
+            // this->materialMsg->set_allocated_diffuse(this->diffMsg);
+            msgs::Color *diffuse = this->materialMsg->mutable_diffuse();
+            diffuse->set_r(this->red);
+            diffuse->set_g(this->green);
+            diffuse->set_b(this->blue);
+            diffuse->set_a(this->alpha);
+
+            // // std::cout<<" publish";
+            this->publishColor->Publish(this->visMsg);
+            // std::cout<<" finish color application"<<std::endl;
+        }
+    };
     
 
     struct RobotState {
         Utils utils;
+        ColorObject detected;
+        ColorObject undetected;
+
         double baseProb;
         double turnAmount;
         double desiredHeading;
@@ -264,8 +377,8 @@ namespace gazebo
             gazebo::math::Pose my_pose = myModel->GetWorldPose();
             gazebo::math::Vector3 my_pos = my_pose.pos;
             double my_yaw = my_pose.rot.GetYaw();
-            int seenLitter = 0;
-
+            int seenLter = 0;
+            // std::cout<<myModel->GetName()<<" ";
             for (auto m : models) {//search through models in world
                 std::string m_name = m->GetName();
                 if(m_name.find("litter") != std::string::npos) {
@@ -273,15 +386,30 @@ namespace gazebo
                     double dist = (this->utils).dxy(my_pos,m_pos);//linear distance
                     double lit_or = (this->utils).normalize(atan2(my_pos.y - m_pos.y, my_pos.x - m_pos.x))
                                     - my_yaw; //orientation of litter wrt robot
+                    
                     if((dist <= myState->litterSensingRange) and //linear distance within sensing range
                         (lit_or >= -myState->fieldOfView/2 and lit_or <= myState->fieldOfView/2)){//and within field of view
                         //litter within sensing range
-                        seenLitter += 1;//increment litter
+                        seenLter += 1;//increment litter
+
+                        //START: debugging litter seen
+                        std::string myName = myModel->GetName();
+                        if (myName.find("robot18") != std::string::npos) {
+
+                            (this->myState).detected.apply_color("link", m);
+                        }
+                        
                     }
+                    else {//not within detection range
+                        std::string myName = myModel->GetName();
+                        if (myName.find("robot18") != std::string::npos) {
+                            (this->myState).undetected.apply_color("link", m);
+                        }
+                    }//END: debugging litter seen
                 }
             }
-            myState->seenLitter = seenLitter;//update litter count
-
+            myState->seenLitter = seenLter;//update litter count
+            // std::cout<<"sensed";
         }
         public : void initParams()
         {
@@ -322,7 +450,8 @@ namespace gazebo
             //update algorithm object
             this->randomWalk = RW(this->generator,this->uformRand,this->normalRandHeading);
 
-            
+            (this->myState).undetected = ColorObject(1,0,0,1);
+            (this->myState).detected = ColorObject(0,0,1,1);
         }
         public: std::string rotate(double headingError)
         {
@@ -365,6 +494,7 @@ namespace gazebo
         public: void OnUpdate(const common::UpdateInfo & _info)
         {
             std::lock_guard<std::mutex> lock(this->mutex);
+            // std::cout<<'start ';
             math::Quaternion myRot = (this->model->GetWorldPose()).rot;
             // (this->myState).desiredHeading = myRot.GetYaw();
             // std::stringstream robotData;
@@ -372,6 +502,7 @@ namespace gazebo
             //sense presence of litter
             this->litterSensor(&(this->myState), this->model, this->model->GetWorld());
 
+            
             if((this->myState).crashed)
             {//avoid obstacle: change direction; state=obstacle-avoidance
                 (this->myState).desiredHeading = (this->myState).desiredHeading + (this->myState).turnAmount;
@@ -420,8 +551,9 @@ namespace gazebo
             this->pubRobotData->Publish(robotDataMsg);
             std::string myName  = this->model->GetName();
             if (myName.find("robot18") != std::string::npos) {
-                std::cout<<"seen litter: "<<(this->myState).seenLitter<<std::endl;
+              std::cout<<"seen litter: "<< (this->myState).seenLitter<<std::endl;
             }
+            // std::cout<<' finish'<<std::endl;
         }
     };
 
