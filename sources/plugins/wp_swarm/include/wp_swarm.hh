@@ -9,6 +9,8 @@
 #include <fstream>
 #include <limits>
 
+#include "simulation_params.pb.h"
+
 using namespace std;
 namespace gazebo
 {

@@ -1,0 +1,242 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+	<%scale=2.5%>
+	<%rb=1;%><!--size of swarm-->
+	<%b_length=20 * scale%><!--length of boundary-->
+	<%b_width=b_length%><!--width of boundary-->
+	<%b_thick=0.1%><!--boundary thickness-->
+	<%b_height=0.2%><!--boundary height-->
+	<world name='default'>
+	
+	<!-- Ground Plane -->
+	<include>
+		<uri>model://ground_plane</uri>
+	</include>
+	
+	<include>
+		<uri>model://sun</uri>
+	</include>
+	<!--start: insert nest model-->
+	<include>
+		<uri>model://m_nest</uri>
+	</include>
+	<!--end: insert home model-->
+	<!--Set GUI pose-->
+	<gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose frame=''>0 0 100 1.57079 1.57079 -1.57079</pose>
+        <view_controller>ortho</view_controller>
+        <projection_type>orthographic</projection_type>
+      </camera>
+    </gui>
+	<!-- start: generate robots that start from home-->
+ 
+
+	<%start_r = 0.80
+	r = start_r
+	dist = 0.5
+	angle = 0
+	angle_step = 0
+	x_start = 0
+	y_starrt = 0
+	id = 1
+	while id <= rb
+		x = r * Math.cos(angle)
+		y = r * Math.sin(angle)
+		
+		if angle == 0
+			x_start = x
+			y_start = y
+			
+			angle_step = 2 * Math.asin(dist / (2.0 * r))
+		end
+				%>
+				
+				<include>
+					<name>m_4wrobot<%=id%></name><%id += 1%>
+					<pose><%=x%> <%=y%> 0.005 0 0 <%=angle%></pose><%angle = angle + angle_step%>
+					<uri>model://m_4wrobot</uri>
+				</include>
+				
+			<%
+			
+			x_temp = r * Math.cos(angle)
+			y_temp = r * Math.sin(angle)
+			
+			d_temp = ((x_temp - x_start)**2 + (y_temp - y_start)**2)**(0.5)
+			
+			if (d_temp + 0.05) < dist
+				r = r + dist
+				angle = 0
+			end
+			
+			if id > rb
+				break
+			end
+	end
+		
+			
+			%>
+			
+	<!--end: generate robots that start from home -->
+	
+	<!--start: generate litter locations-->
+	<!--<%heap = [[2.9,2.9,40,2],[-4.5,-4.5,160,2]]%>
+	<%heap = [[23,23,40,1],[-24.4,-24.4,50,1],[16,-16.4,75,2],[-19.4,6,10,0.5],[10,0,40,3]]%>
+	
+	<%heap = [[9.5,9.5,100,0.3]]%>
+	<%heap = [[0,100,0,b_length - 0.2]]%>
+	<%heap = [[-9.3,-9.3,50,1],[9.3,9.3,50,1]]%>
+	<%heap = [[-7 * scale,-7 * scale,100,6 * scale - 0.2],[7 * scale,7 * scale,100,6 * scale - 0.2]]%>
+	<%heap = [[-7 * scale,-7 * scale,50,6 * scale - 0.2],[7 * scale,-7 * scale,50,6 * scale - 0.2],[-7 * scale,7 * scale,50,6 * scale - 0.2],[7 * scale,7 * scale,50,6 * scale - 0.2]]%>-->
+	<%heap = [[0,0,1,b_length - 0.2]]%>
+	<%
+	size = 0
+	lit = 1
+	for i in heap
+		 x = i[0];y = i[1]; size = size + i[2]; radius = i[3]/2.0
+		 while lit <= size
+			lx = rand(-1.0..1.0)*radius + x; ly = rand(-1.0..1.0)*radius + y;
+			if lx.abs < 2 and ly.abs < 2
+				next
+			end%>
+			<include>
+				<name>m_litter<%=lit%></name>
+				<pose><%=lx%> <%=ly%> 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include><% lit = lit+1 %>
+		 <%end
+		 
+		
+	end%>
+	<!--end: generate litter locations-->
+	
+	<!--start: create boundary-->
+	<model name='boundary1'>
+		<static>1</static>
+		<pose>0 0 0 0 0 0</pose>
+		<link name='link'>
+			<collision name='collision1'>
+				<pose>-<%=b_length/2+b_thick/2%> 0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size><%=b_thick%> <%=b_length+b_thick%> <%=b_height%></size>
+					</box>
+				</geometry>
+			</collision>
+			
+			<visual name='visual1'>
+				<pose>-<%=b_length/2+b_thick/2%> 0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size><%=b_thick%> <%=b_length+b_thick%> <%=b_height%></size>
+					</box>
+				</geometry>
+			</visual>
+			
+			<collision name='collision2'>
+				<pose><%=b_length/2+b_thick/2%> 0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size><%=b_thick%> <%=b_length+b_thick%> <%=b_height%></size>
+					</box>
+				</geometry>
+			</collision>
+			
+			<visual name='visual2'>
+				<pose><%=b_length/2+b_thick/2%> 0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size><%=b_thick%> <%=b_length+b_thick%> <%=b_height%></size>
+					</box>
+				</geometry>
+			</visual>
+			
+			<collision name='collision3'>
+				<pose>0 -<%=b_width/2%> 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size><%=b_width%> <%=b_thick%> <%=b_height%></size>
+					</box>
+				</geometry>
+			</collision>
+			
+			<visual name='visual3'>
+				<pose>0 -<%=b_width/2%> 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size><%=b_width%> <%=b_thick%> <%=b_height%></size>
+					</box>
+				</geometry>
+			</visual>
+			
+			<collision name='collision4'>
+				<pose>0 <%=b_width/2%> 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size><%=b_width%> <%=b_thick%> <%=b_height%></size>
+					</box>
+				</geometry>
+			</collision>
+			
+			<visual name='visual4'>
+				<pose>0 <%=b_width/2%> 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size><%=b_width%> <%=b_thick%> <%=b_height%></size>
+					</box>
+				</geometry>
+			</visual>
+		</link>
+	</model>
+	
+	
+	<!--
+	<include>
+		<uri>model://m_boundary10x10</uri>
+	</include>-->
+	<!--end: create boundary-->
+	
+	
+	
+	
+	
+	<!--<% i = 1;lt=0 %>
+	<% while i <= lt %>
+		<% x = rand * 19.6 - 9.8; y = rand * 19.6 - 9.8 %>
+		<% if (x**2 + y**2)**(0.5) < 3 %>
+			<% next%>
+		<% end %>
+		
+		<include>
+			<name>m_litter<%=i%></name>
+			<pose><%=x%> <%=y%> 0.025 0 0 0</pose>
+			<uri>model://m_litter</uri>
+		</include><% i = i+1 %>
+	<%end%>
+	
+	<include>
+		<name>m_litter2</name>
+		<pose>1.2 0.2 0.025 0 0 0</pose>
+		<uri>model://m_litter</uri>
+	</include>
+	
+	 Populating world with Litter objects 
+	<population name='litter_population1'>
+		<model name='m_litter1'>
+			<include>
+				<uri>model://m_litter</uri>
+			</include>
+		</model>
+		<pose>4 0 0 0 0 0</pose><! 9.5 9.5 0.05>
+		<box>
+			<size>3 3 0.05</size>
+		</box>
+		<model_count>10</model_count>
+		<distribution>
+			<type>uniform</type>
+		</distribution>
+	</population>-->
+		<plugin name="wp_swarm" filename="libwp_swarm.so"/>
+	</world>
+</sdf>

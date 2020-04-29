@@ -1,0 +1,820 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+	<%scale=1.1%>
+	<%rb=15;%><!--size of swarm-->
+	<%b_length=20 * scale%><!--length of boundary-->
+	<%b_width=b_length%><!--width of boundary-->
+	<%b_thick=0.1%><!--boundary thickness-->
+	<%b_height=0.2%><!--boundary height-->
+	<world name='default'>
+	
+	<!-- Ground Plane -->
+	<include>
+		<uri>model://ground_plane</uri>
+	</include>
+	
+	<include>
+		<uri>model://sun</uri>
+	</include>
+	
+	<!--start: insert nest model-->
+	<model name ='m_nest'>
+    <pose>0 0 0.5 0 0 0</pose>
+    <static>true</static>
+    <link name ='link'>
+     <!-- <pose>0 0 .5 0 0 0</pose> -->
+      <collision name ='collision'>
+		  <!--<pose>0 0 0 0 0 0</pose>-->
+        <geometry>
+			<cylinder>
+				<radius>0.45</radius>
+				<length>1</length>
+			</cylinder>
+          <!--<box>
+			  <size>0.4 0.4 1</size>
+		  </box>-->
+        </geometry>
+        <surface>
+			<contact>
+				<collide_bitmask>0x01</collide_bitmask>
+				<!--<collide_without_contact>true</collide_without_contact>-->
+			</contact>
+        </surface>
+      </collision>
+      
+      <visual name ='visual'>
+        <geometry>
+			<cylinder>
+				<radius>0.45</radius>
+				<length>1</length>
+			</cylinder>
+          <!--<box>
+			  <size>0.4 0.4 1</size>
+		  </box>-->
+        </geometry>
+		<material>
+			<ambient>0 0 01 01</ambient>
+			<diffuse>0 0 01 01</diffuse>
+			<specular>0 0 0 0</specular>
+			<emissive>0 0 0 0</emissive>
+		</material>
+		<transparency>0</transparency>
+      </visual>
+      
+    </link>
+   <static>1</static> 
+ 
+	<plugin name='nest_plugin' filename='libnest_plugin.so'/><!---->  
+  </model>
+	<!--end: insert home model-->
+
+	<!-- start: generate robots that start from home-->
+ 
+
+	<%start_d = 1.0
+	robot_d=0.5;
+	d_lr=0.25;
+	d_fb=0.25;
+	lr_step=robot_d+d_lr
+	fb_step=robot_d+d_fb
+	start_d = lr_step
+	limit_d = -start_d
+	x = Array((limit_d..start_d).step(lr_step))
+	
+	level = []
+	id = 1
+	s = 0
+	angle = 0
+	angle_step = 3.142/2.0
+	require 'set'
+	r_positions = Set.new
+	#puts x.join(",")
+	while id <= rb
+		s = s + 1
+		#puts x.join(",")
+		#puts [start_d,limit_d].join(",")
+		for p in [start_d,limit_d]
+			for p1 in x
+				pp = []
+				if s % 2 == 0
+					
+					#puts [id,s,p1,p].join(",")
+					pp = [p1,p]
+				else
+					#puts [id,s,p,p1].join(",")
+					pp = [p,p1]
+				end
+				if r_positions.add?(pp) != nil
+				%>
+				
+				
+
+<%ssc=1%><!--scale -->
+<%cl=0.01%><!--chassis length -->
+<%cr=0.25*ssc%><!--chassis radius -->
+<%wr=0.0605*ssc%><!--wheel radius -->
+<%wl=wr%><!--wheel length -->
+<%mu=1%><!--friction coefficient on wheels range from 0 to 1 -->
+<%slip=1%><!--slip coefficient range from 0 to 1 -->
+<%m_ch=1%><!--chassis mass-->
+<%m_wh=1%><!--mass of revolute wheels-->
+<%m_cs=0.1%><!--mass of caster wheels (2**id).to_s(16)-->
+<%collide_bitmask=1%>
+<%collide_without_contact='true'%>
+  <model name='m_4wrobot<%=id%>'><%id += 1%>
+	  <static>false</static>
+	  <pose><%=pp[0]%> <%=pp[1]%> 0.005 0 0 <%=angle%></pose>
+	  <link name = 'chassis'>
+		  <pose>0 0 <%=2*wr+cl/2%> 0 0 0</pose>
+		  <inertial>
+			<mass><%=m_ch%></mass>
+			<inertia>
+				<ixx><%=1.0/12.0*m_ch*(3*cr**2+cl**2)%></ixx>
+				<ixy>0</ixy>
+				<ixz>0</ixz>
+				<iyy><%=1.0/12.0*m_ch*(3*cr**2+cl**2)%></iyy>
+				<iyz>0</iyz>
+				<izz><%=1.0/12.0*m_ch*(3*cr**2+cl**2)%></izz>
+			</inertia>
+		 </inertial>
+		  <visual name='visual'>
+			  <geometry>
+				  <cylinder>
+					  <radius><%=cr%></radius>
+					  <length><%=cl%></length>
+				  </cylinder>
+			  </geometry>
+			  <material>
+				<ambient>0.95 0.95 0.95 01</ambient>
+				<diffuse>0.95 0.95 0.95 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual1'>
+			  <pose><%=cr*0.8%> 0 0 0 0 0</pose>
+			  <geometry>
+				  <cylinder>
+					  <radius><%=cr/5%></radius>
+					  <length><%=wl/5%></length>
+				  </cylinder>
+			  </geometry>
+			  <material>
+				<ambient>0 0.7 0 01</ambient>
+				<diffuse>0 0.7 0 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <collision name='collision'>
+			  <!--<pose>0 0 <%=-wr%> 0 0 0</pose>-wr-cl/5-->
+			  <geometry>
+				  <cylinder>
+					  <radius><%=cr%></radius>
+					  <length><%=wr%></length><!--2*wr-->
+				  </cylinder>
+			  </geometry>
+			  <surface>
+				<contact>
+					<collide_bitmask>0x<%=collide_bitmask%></collide_bitmask>
+					<!--<collide_without_contact>collide_without_contact</collide_without_contact>-->
+				</contact>
+				<friction>
+					<ode>
+						<mu>0</mu>
+						<mu2>0</mu2>
+						<slip1>1</slip1>
+						<slip2>1</slip2>
+					</ode>
+				</friction>
+			</surface>
+		  </collision>
+		  <sensor name='chassis_contact' type='contact'>
+			  <contact>
+				  <collision>collision</collision>
+			  </contact>
+			  <update_rate>1</update_rate>
+			  <always_on>true</always_on>
+			  <visualize>false</visualize>
+		  </sensor>
+	  </link>
+	  <link name = 'wheelL'>
+		  <pose>0 <%=cr*0.8%> <%=wr%> 0 1.5705 1.5705</pose>
+	    <inertial>
+			<mass><%=m_wh%></mass>
+			<inertia>
+				<ixx><%=1.0/12.0*m_wh*(3*wr**2+wl**2)%></ixx>
+				<ixy>0</ixy>
+				<ixz>0</ixz>
+				<iyy><%=1.0/12.0*m_wh*(3*wr**2+wl**2)%></iyy>
+				<iyz>0</iyz>
+				<izz><%=1.0/12.0*m_wh*(3*wr**2+wl**2)%></izz>
+			</inertia>
+		 </inertial>
+		  <visual name = 'visual'>
+			  <geometry>
+				  <cylinder>
+					  <radius><%=wr%></radius>
+					  <length><%=wl%></length>
+				  </cylinder>
+			  </geometry>
+			  <material>
+				<ambient>0.2 0.2 0.2 01</ambient>
+				<diffuse>0.2 0.2 0.2 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual1'>
+			  <pose>0 <%=cr*0.2%> <%=wr/2%> 0 0 0</pose>
+			  <geometry>
+				  <cylinder>
+					  <radius><%=wr/6%></radius>
+					  <length><%=wl/2%></length>
+				  </cylinder>
+			  </geometry>
+			  <material>
+				<ambient>0 0.7 0 01</ambient>
+				<diffuse>0 0.7 0 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  
+		  <collision name = 'collision'>
+			  <geometry>
+				  <cylinder>
+					  <radius><%=wr%></radius>
+					  <length><%=wl%></length>
+				  </cylinder>
+			  </geometry>
+			  <surface>
+				<contact>
+					<collide_bitmask>0x<%=collide_bitmask%></collide_bitmask>
+					<!--<collide_without_contact>collide_without_contact</collide_without_contact>-->
+				</contact>
+				<friction>
+					<ode>
+						<mu><%=mu%></mu>
+						<mu2><%=mu%></mu2>
+						<slip1><%=slip%></slip1>
+						<slip2><%=slip%></slip2><!---->
+					</ode>
+				</friction>
+			</surface>
+		  </collision>
+      </link>
+      
+      <joint type='revolute' name='L_joint'>
+		  <pose>0 0 <%=-wl/2.0%> 0 0 0</pose>
+		  <child>wheelL</child>
+		  <parent>chassis</parent>
+		  <axis>
+			  <xyz>0 0 1</xyz>
+		  </axis>
+		  <physics>
+			  <ode>
+				  <max_force>0</max_force>
+			  </ode>
+		  </physics>
+      </joint>
+      <link name = 'wheelR'>
+		  <pose>0 <%=-cr*0.8%> <%=wr%> 0 1.5705 1.5705</pose>
+		  <inertial>
+		    <mass><%=m_wh%></mass>
+			<inertia>
+				<ixx><%=1.0/12.0*m_wh*(3*wr**2+wl**2)%></ixx>
+				<ixy>0</ixy>
+				<ixz>0</ixz>
+				<iyy><%=1.0/12.0*m_wh*(3*wr**2+wl**2)%></iyy>
+				<iyz>0</iyz>
+				<izz><%=1.0/12.0*m_wh*(3*wr**2+wl**2)%></izz>
+			</inertia>
+		 </inertial>
+		  <visual name = 'visual'>
+			  <geometry>
+				  <cylinder>
+					  <radius><%=wr%></radius>
+					  <length><%=wl%></length>
+				  </cylinder>
+			  </geometry>
+			  <material>
+				<ambient>0.2 0.2 0.2 01</ambient>
+				<diffuse>0.2 0.2 0.2 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual1'>
+			  <pose>0 <%=cr*0.2%> <%=-wr/2%> 0 0 0</pose>
+			  <geometry>
+				  <cylinder>
+					  <radius><%=wr/6%></radius>
+					  <length><%=wl/2%></length>
+				  </cylinder>
+			  </geometry>
+			  <material>
+				<ambient>0 0.7 0 01</ambient>
+				<diffuse>0 0.7 0 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <collision name = 'collision'>
+			  <geometry>
+				  <cylinder>
+					  <radius><%=wr%></radius>
+					  <length><%=wl%></length>
+				  </cylinder>
+			  </geometry>
+			  <surface>
+				<contact>
+					<collide_bitmask>0x<%=collide_bitmask%></collide_bitmask>
+					<!--<collide_without_contact>collide_without_contact</collide_without_contact>-->
+				</contact>
+				<friction>
+					<ode>
+						<mu><%=mu%></mu>
+						<mu2><%=mu%></mu2>
+						<slip1><%=slip%></slip1>
+						<slip2><%=slip%></slip2><!---->
+					</ode>
+				</friction>
+			</surface>
+		  </collision>
+      </link>
+      <joint type='revolute' name='R_joint'>
+		  <pose>0 0 <%=wl/2.0%> 0 0 0</pose>
+		  <child>wheelR</child>
+		  <parent>chassis</parent>
+		  <axis>
+			  <xyz>0 0 1</xyz>
+		  </axis>
+		  <physics>
+			  <ode>
+				  <max_force>0</max_force>
+			  </ode>
+		  </physics>
+      </joint>
+      <link name = 'wheelB'>
+		  <pose><%=-cr*0.6%> 0 <%=wr%> 0 1.5705 1.5705</pose>
+		  <inertial>
+			<mass><%=m_cs%></mass>
+			<inertia>
+				<ixx><%=2.0/5.0*m_cs*wr**2%></ixx>
+				<ixy>0</ixy>
+				<ixz>0</ixz>
+				<iyy><%=2.0/5.0*m_cs*wr**2%></iyy>
+				<iyz>0</iyz>
+				<izz><%=2.0/5.0*m_cs*wr**2%></izz>
+			</inertia>
+		 </inertial>
+		 <visual name = 'visual1'>
+			  <pose><%=wr%> 0 0 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual2'>
+			  <pose>0 <%=wr%> 0 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual3'>
+			  <pose>0 0 <%=wr%> 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual4'>
+			  <pose><%=-wr%> 0 0 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=-wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual5'>
+			  <pose>0 <%=-wr%> 0 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual6'>
+			  <pose>0 0 <%=-wr%> 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual'>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0.2 0.2 0.2 01</ambient>
+				<diffuse>0.2 0.2 0.2 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <collision name = 'collision'>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr%></radius>
+				  </sphere>
+			  </geometry>
+			   <surface>
+				  <contact>
+					<collide_bitmask>0x<%=collide_bitmask%></collide_bitmask>
+					<!--<collide_without_contact>collide_without_contact</collide_without_contact>-->
+				  </contact>
+				  <friction>
+					  <ode>
+						  <mu><%=0%></mu>
+						  <mu2><%=0%></mu2>
+						  <!--<slip1><%=slip%></slip1>
+						  <slip2><%=slip%></slip2>-->
+					  </ode>
+				  </friction>
+			  </surface>
+		  </collision>
+      </link>
+      <joint type='ball' name='B_joint'>
+		  <child>wheelB</child>
+		  <parent>chassis</parent>
+      </joint>
+      
+      <link name = 'wheelF'>
+		  <pose><%=cr*0.6%> 0 <%=wr%> 0 1.5705 1.5705</pose>
+		  <inertial>
+			<mass><%=m_cs%></mass>
+			<inertia>
+				<ixx><%=2.0/5.0*m_cs*wr**2%></ixx>
+				<ixy>0</ixy>
+				<ixz>0</ixz>
+				<iyy><%=2.0/5.0*m_cs*wr**2%></iyy>
+				<iyz>0</iyz>
+				<izz><%=2.0/5.0*m_cs*wr**2%></izz>
+			</inertia>
+		 </inertial>
+		 <visual name = 'visual1'>
+			  <pose><%=wr%> 0 0 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual2'>
+			  <pose>0 <%=wr%> 0 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual3'>
+			  <pose>0 0 <%=wr%> 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual4'>
+			  <pose><%=-wr%> 0 0 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=-wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual5'>
+			  <pose>0 <%=-wr%> 0 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual6'>
+			  <pose>0 0 <%=-wr%> 0 0 0</pose>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr*0.1%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0 0 0.7 01</ambient>
+				<diffuse>0 0 0.7 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <visual name = 'visual'>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr%></radius>
+				  </sphere>
+			  </geometry>
+			  <material>
+				<ambient>0.2 0.2 0.2 01</ambient>
+				<diffuse>0.2 0.2 0.2 01</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>0 0 0 0</emissive>
+			  </material>
+		  </visual>
+		  <collision name = 'collision'>
+			  <geometry>
+				  <sphere>
+					  <radius><%=wr%></radius>
+				  </sphere>
+			  </geometry>
+			  <surface>
+				  <contact>
+					<collide_bitmask>0x<%=collide_bitmask%></collide_bitmask>
+					<!--<collide_without_contact>collide_without_contact</collide_without_contact>-->
+				  </contact>
+				  <friction>
+					  <ode>
+						  <mu><%=0%></mu>
+						  <mu2><%=0%></mu2>
+						 <!-- <slip1><%=slip%></slip1>
+						  <slip2><%=slip%></slip2>-->
+					  </ode>
+				  </friction>
+			  </surface>
+		  </collision>
+      </link>
+      
+      <joint type='ball' name='F_joint'>
+		  <child>wheelF</child>
+		  <parent>chassis</parent>
+      </joint>
+      
+	 <plugin name='libmp_swarm1' filename='libmp_swarm1.so'/><!-- -->
+  </model>
+				
+			<%	end
+				if id > rb
+					break
+				end
+			end
+			angle = angle + 2*angle_step
+			if id > rb
+				break
+			end
+		end
+		angle = angle + angle_step
+		if s % 2 == 0
+			#puts "next level"
+			angle = 0
+			start_d = start_d + fb_step
+			limit_d = -start_d
+			x = Array((limit_d..start_d).step(lr_step))
+		
+		 end
+	end
+		
+			
+			%>
+			
+	<!--end: generate robots that start from home -->
+	
+	<!--start: generate litter locations-->
+	<!--<%heap = [[2.9,2.9,40,2],[-4.5,-4.5,160,2]]%>
+	<%heap = [[23,23,40,1],[-24.4,-24.4,50,1],[16,-16.4,75,2],[-19.4,6,10,0.5],[10,0,40,3]]%>
+	
+	<%heap = [[9.5,9.5,100,0.3]]%>
+	<%heap = [[0,100,0,b_length - 0.2]]%>
+	<%heap = [[-9.3,-9.3,50,1],[9.3,9.3,50,1]]%>-->
+	<%heap = [[-7 * scale,-7 * scale,100,6 * scale - 0.2]]%>
+	<%
+	size = 0
+	lit = 1
+	for i in heap
+		 x = i[0];y = i[1]; size = size + i[2]; radius = i[3]/2.0
+		 while lit <= size
+			lx = rand(-1.0..1.0)*radius + x; ly = rand(-1.0..1.0)*radius + y;
+			if lx.abs < 2 and ly.abs < 2
+				next
+			end%>
+			<include>
+				<name>m_litter<%=lit%></name>
+				<pose><%=lx%> <%=ly%> 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include><% lit = lit+1 %>
+		 <%end
+		 
+		
+	end%>
+	<!--end: generate litter locations-->
+	
+	<!--start: create boundary-->
+	<model name='boundary1'>
+		<static>1</static>
+		<pose>0 0 0 0 0 0</pose>
+		<link name='link'>
+			<collision name='collision1'>
+				<pose>-<%=b_length/2+b_thick/2%> 0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size><%=b_thick%> <%=b_length+b_thick%> <%=b_height%></size>
+					</box>
+				</geometry>
+			</collision>
+			
+			<visual name='visual1'>
+				<pose>-<%=b_length/2+b_thick/2%> 0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size><%=b_thick%> <%=b_length+b_thick%> <%=b_height%></size>
+					</box>
+				</geometry>
+			</visual>
+			
+			<collision name='collision2'>
+				<pose><%=b_length/2+b_thick/2%> 0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size><%=b_thick%> <%=b_length+b_thick%> <%=b_height%></size>
+					</box>
+				</geometry>
+			</collision>
+			
+			<visual name='visual2'>
+				<pose><%=b_length/2+b_thick/2%> 0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size><%=b_thick%> <%=b_length+b_thick%> <%=b_height%></size>
+					</box>
+				</geometry>
+			</visual>
+			
+			<collision name='collision3'>
+				<pose>0 -<%=b_width/2%> 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size><%=b_width%> <%=b_thick%> <%=b_height%></size>
+					</box>
+				</geometry>
+			</collision>
+			
+			<visual name='visual3'>
+				<pose>0 -<%=b_width/2%> 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size><%=b_width%> <%=b_thick%> <%=b_height%></size>
+					</box>
+				</geometry>
+			</visual>
+			
+			<collision name='collision4'>
+				<pose>0 <%=b_width/2%> 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size><%=b_width%> <%=b_thick%> <%=b_height%></size>
+					</box>
+				</geometry>
+			</collision>
+			
+			<visual name='visual4'>
+				<pose>0 <%=b_width/2%> 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size><%=b_width%> <%=b_thick%> <%=b_height%></size>
+					</box>
+				</geometry>
+			</visual>
+		</link>
+	</model>
+	
+	
+	<!--
+	<include>
+		<uri>model://m_boundary10x10</uri>
+	</include>-->
+	<!--end: create boundary-->
+	
+	
+	
+	
+	
+	<!--<% i = 1;lt=0 %>
+	<% while i <= lt %>
+		<% x = rand * 19.6 - 9.8; y = rand * 19.6 - 9.8 %>
+		<% if (x**2 + y**2)**(0.5) < 3 %>
+			<% next%>
+		<% end %>
+		
+		<include>
+			<name>m_litter<%=i%></name>
+			<pose><%=x%> <%=y%> 0.025 0 0 0</pose>
+			<uri>model://m_litter</uri>
+		</include><% i = i+1 %>
+	<%end%>
+	
+	<include>
+		<name>m_litter2</name>
+		<pose>1.2 0.2 0.025 0 0 0</pose>
+		<uri>model://m_litter</uri>
+	</include>
+	
+	 Populating world with Litter objects 
+	<population name='litter_population1'>
+		<model name='m_litter1'>
+			<include>
+				<uri>model://m_litter</uri>
+			</include>
+		</model>
+		<pose>4 0 0 0 0 0</pose><! 9.5 9.5 0.05>
+		<box>
+			<size>3 3 0.05</size>
+		</box>
+		<model_count>10</model_count>
+		<distribution>
+			<type>uniform</type>
+		</distribution>
+	</population>-->
+		<plugin name="wp_swarm" filename="libwp_swarm.so"/>
+	</world>
+</sdf>

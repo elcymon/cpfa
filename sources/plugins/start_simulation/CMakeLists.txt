@@ -13,19 +13,21 @@ include_directories(
 link_directories(${GAZEBO_LIBRARY_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}/custom_msgs)
 
+# list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
+set(ALLOW_DUPLICATE_CUSTOM_TARGETS TRUE)
+
 #if(NOT TARGET custom_msgs)
     add_subdirectory(custom_msgs)
 #endif(NOT TARGET custom_msgs)
+
 # header files directory
 include_directories(include)
 
-# world plugin for robots simulation
-set(WP_SWARM src/wp_swarm.cc
-    src/wp_swarm_onupdate.cc
-    include/wp_swarm.hh)
-
-add_library(wp_swarm SHARED ${WP_SWARM})
-target_link_libraries(wp_swarm
+# start simulations gazebo client
+set (START_SIMULATION src/start_simulation.cc
+    include/start_simulation.hh)
+add_executable(start_simulation ${START_SIMULATION})
+target_link_libraries(start_simulation
     custom_msgs
     ${GAZEBO_LIBRARIES} pthread
     ${Boost_LIBRARIES} ${SDF_LIBRARIES})

@@ -1,0 +1,1375 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+	
+	<!--size of swarm-->
+	<!--length of boundary-->
+	<!--width of boundary-->
+	<!--boundary thickness-->
+	<!--boundary height-->
+	<world name='default'>
+	
+	<!-- Ground Plane -->
+	<include>
+		<uri>model://ground_plane</uri>
+	</include>
+	
+	<include>
+		<uri>model://sun</uri>
+	</include>
+	<!--start: insert nest model-->
+	<include>
+		<uri>model://m_nest</uri>
+	</include>
+	<!--end: insert home model-->
+	<!--Set GUI pose-->
+	<gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose frame=''>0 0 100 1.57079 1.57079 -1.57079</pose>
+        <view_controller>ortho</view_controller>
+        <projection_type>orthographic</projection_type>
+      </camera>
+    </gui>
+
+	<!-- start: generate robots that start from home-->
+ 
+
+	
+				
+				<include>
+					<name>m_4wrobot1</name>
+					<pose>0.8 0.0 0.005 0 0 0</pose>
+					<uri>model://m_4wrobot</uri>
+				</include>
+				
+			
+			
+	<!--end: generate robots that start from home -->
+	
+	<!--start: generate litter locations-->
+	<!--
+	
+	
+	
+	
+	-->
+	
+	
+			<include>
+				<name>m_litter1</name>
+				<pose>-17.30734731909633 -18.030902254697875 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter2</name>
+				<pose>-19.789569027922372 -20.711644271417427 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter3</name>
+				<pose>-17.477123689305575 -21.73977167761605 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter4</name>
+				<pose>-23.61661279161195 -12.759561767662362 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter5</name>
+				<pose>-19.24845512178201 -15.09566107964216 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter6</name>
+				<pose>-21.441067803697166 -19.870297361027674 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter7</name>
+				<pose>-12.136914422752477 -17.048887435493196 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter8</name>
+				<pose>-18.18268458414623 -11.673756699829088 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter9</name>
+				<pose>-14.292786405042209 -20.89148853605722 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter10</name>
+				<pose>-22.812315155205788 -10.396507496448333 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter11</name>
+				<pose>-20.24230631667441 -21.0490035890329 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter12</name>
+				<pose>-10.919514546031058 -22.94801738004805 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter13</name>
+				<pose>-23.070351150108806 -18.273493850658703 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter14</name>
+				<pose>-21.770300308382666 -14.37356762727602 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter15</name>
+				<pose>-22.753502813508128 -23.558472305819485 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter16</name>
+				<pose>-13.315560276300454 -13.75199882732698 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter17</name>
+				<pose>-17.160902010842285 -16.518737553144906 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter18</name>
+				<pose>-16.940919225512985 -14.35838449870257 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter19</name>
+				<pose>-18.84798178071594 -15.419828367933176 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter20</name>
+				<pose>-23.895986513936194 -17.613224061104532 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter21</name>
+				<pose>-14.408177606485516 -11.48552248048859 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter22</name>
+				<pose>-18.36345929293073 -17.396179180478523 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter23</name>
+				<pose>-20.954717144285002 -15.616231903446796 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter24</name>
+				<pose>-20.663452819627093 -20.716414636545736 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter25</name>
+				<pose>-18.28059826502593 -20.824261259249823 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter26</name>
+				<pose>-24.169229147696452 -15.265802893238774 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter27</name>
+				<pose>-12.354791007245886 -21.117094849664404 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter28</name>
+				<pose>-19.470789018715266 -16.805941799693645 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter29</name>
+				<pose>-13.444165441437132 -22.633357335649503 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter30</name>
+				<pose>-12.22570768749339 -20.173165314505876 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter31</name>
+				<pose>-17.698613446754976 -18.244226688468935 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter32</name>
+				<pose>-21.400086957108186 -17.54254260195282 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter33</name>
+				<pose>-24.210268184546102 -24.615016004094215 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter34</name>
+				<pose>-20.523187515703416 -14.436896395792608 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter35</name>
+				<pose>-18.04488687175463 -10.141600341161176 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter36</name>
+				<pose>-18.226870750580307 -23.669454575083243 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter37</name>
+				<pose>-15.937907587081392 -12.845005014150495 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter38</name>
+				<pose>-12.14416228988109 -21.16961086160623 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter39</name>
+				<pose>-15.195942815124388 -11.225116246443111 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter40</name>
+				<pose>-15.409327213107455 -22.914434324255417 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter41</name>
+				<pose>-16.954477434364435 -18.67085188205594 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter42</name>
+				<pose>-22.566372111035815 -12.39467611271122 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter43</name>
+				<pose>-18.472249782245278 -20.532490325697083 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter44</name>
+				<pose>-20.129360460924673 -19.808918064385562 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter45</name>
+				<pose>-24.19220776428137 -24.193812647276744 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter46</name>
+				<pose>-18.87522684914411 -24.781330178356747 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter47</name>
+				<pose>-11.57413943315306 -18.403067345811078 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter48</name>
+				<pose>-24.681571459113854 -24.423655040112642 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter49</name>
+				<pose>-17.522741831350345 -12.960834399534793 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter50</name>
+				<pose>-19.661588944833493 -13.587589965505561 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter51</name>
+				<pose>-15.451049108294114 -20.925589667610712 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter52</name>
+				<pose>-15.853011594018378 -14.480869007072593 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter53</name>
+				<pose>-19.55311354509782 -15.47207420578581 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter54</name>
+				<pose>-12.043764173615912 -18.760940638336294 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter55</name>
+				<pose>-10.567889687913649 -17.98482691142607 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter56</name>
+				<pose>-12.629910120866601 -22.43947137241318 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter57</name>
+				<pose>-21.545451128587633 -21.886765544948023 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter58</name>
+				<pose>-24.052360694676956 -12.223569114857167 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter59</name>
+				<pose>-15.320218779723863 -13.115895167728741 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter60</name>
+				<pose>-14.934381934832224 -23.75509880299487 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter61</name>
+				<pose>-16.192480524669076 -23.671268483281207 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter62</name>
+				<pose>-14.691506611750965 -15.690775644550147 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter63</name>
+				<pose>-11.9829742920526 -12.606071230286686 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter64</name>
+				<pose>-14.03524279214491 -14.624473817305748 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter65</name>
+				<pose>-13.650512582890013 -10.78010294684032 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter66</name>
+				<pose>-20.598536773375233 -15.046580325599702 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter67</name>
+				<pose>-19.692079873262983 -12.508592082244466 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter68</name>
+				<pose>-14.265449993874094 -21.6395025914088 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter69</name>
+				<pose>-13.88367106592784 -15.490474449548499 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter70</name>
+				<pose>-22.6489758649766 -16.38805561413272 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter71</name>
+				<pose>-18.94111927991424 -21.055423361678567 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter72</name>
+				<pose>-15.809578968854273 -17.603821433276035 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter73</name>
+				<pose>-22.009795651640736 -15.953922201190627 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter74</name>
+				<pose>-14.69985706566018 -22.200959753323755 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter75</name>
+				<pose>-13.952300030256572 -15.00467803362543 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter76</name>
+				<pose>-13.364182448474018 -18.63709446718567 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter77</name>
+				<pose>-12.486691011125078 -18.93448925760851 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter78</name>
+				<pose>-18.793527776320307 -22.976888404471232 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter79</name>
+				<pose>-16.88794666613626 -23.90047305600834 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter80</name>
+				<pose>-20.90199903094183 -19.240505526459703 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter81</name>
+				<pose>-22.265024905490115 -15.722948528160517 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter82</name>
+				<pose>-12.558931180588058 -22.820941283424474 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter83</name>
+				<pose>-14.437928195048018 -24.010993580332237 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter84</name>
+				<pose>-24.78538334735225 -20.937394896607117 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter85</name>
+				<pose>-20.14435819149204 -16.28004522656826 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter86</name>
+				<pose>-20.00618441136689 -17.41902764443963 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter87</name>
+				<pose>-23.0384567160914 -21.08886451317122 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter88</name>
+				<pose>-14.429046440420882 -15.28426586577369 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter89</name>
+				<pose>-20.593165128221525 -17.696654565408778 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter90</name>
+				<pose>-13.173494344699922 -14.862794502553164 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter91</name>
+				<pose>-12.931797996095534 -19.621577822493414 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter92</name>
+				<pose>-12.741009221930367 -23.797097546978346 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter93</name>
+				<pose>-21.959515392723013 -12.902435787574198 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter94</name>
+				<pose>-11.158128045858405 -22.420306588336867 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter95</name>
+				<pose>-12.813006411459003 -14.297879811183353 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter96</name>
+				<pose>-16.612158617181766 -15.784846754404565 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter97</name>
+				<pose>-22.27682583317138 -15.214272181831278 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter98</name>
+				<pose>-10.793247186096337 -20.545310923604447 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter99</name>
+				<pose>-23.690717614482423 -15.906801977677995 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter100</name>
+				<pose>-12.728316014749147 -10.38512575330827 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter101</name>
+				<pose>-13.776087179896212 -15.436396073130513 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter102</name>
+				<pose>-18.858449832622508 -16.16063797207376 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter103</name>
+				<pose>-18.788173797122223 -16.243505111066575 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter104</name>
+				<pose>-20.92346956797878 -10.93785934323868 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter105</name>
+				<pose>-16.00598383055597 -23.764742031874082 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter106</name>
+				<pose>-19.968633748661418 -21.428145244248242 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter107</name>
+				<pose>-11.689815193618351 -21.50995225442348 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter108</name>
+				<pose>-18.029078062324203 -11.185899347484238 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter109</name>
+				<pose>-15.505633638274645 -23.137008816359995 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter110</name>
+				<pose>-13.146704371369069 -18.18810226029383 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter111</name>
+				<pose>-20.87425416630617 -13.215541282444196 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter112</name>
+				<pose>-15.760375719791998 -14.628467643794268 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter113</name>
+				<pose>-17.300970178676778 -16.043985096770168 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter114</name>
+				<pose>-15.583755345305022 -14.012878046641102 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter115</name>
+				<pose>-21.59238115181616 -11.294643967395718 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter116</name>
+				<pose>-10.622247259073609 -13.822542951688652 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter117</name>
+				<pose>-19.100252507629225 -11.658552749302217 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter118</name>
+				<pose>-11.108843022729378 -16.03611361033302 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter119</name>
+				<pose>-22.04102406745553 -15.67698661182556 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter120</name>
+				<pose>-19.830697655174497 -16.28010995738821 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter121</name>
+				<pose>-23.313598622596572 -18.87129099339835 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter122</name>
+				<pose>-18.82544136843757 -14.353263622585082 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter123</name>
+				<pose>-10.820925806578305 -24.766283045213065 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter124</name>
+				<pose>-15.190284318026224 -23.690195740712554 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter125</name>
+				<pose>-19.731938248772085 -14.054607126683301 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter126</name>
+				<pose>-10.469568714322888 -20.506797635017765 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter127</name>
+				<pose>-16.451690331651445 -13.505448081654421 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter128</name>
+				<pose>-19.46864716431153 -11.498894926632316 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter129</name>
+				<pose>-24.14559351699515 -16.230620171240563 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter130</name>
+				<pose>-17.770067766930946 -17.936902875494596 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter131</name>
+				<pose>-16.776484241592385 -17.848089725444183 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter132</name>
+				<pose>-24.435760697258953 -12.642643012891778 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter133</name>
+				<pose>-13.092517904802927 -14.0955580410129 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter134</name>
+				<pose>-17.370169301326893 -24.253656548181233 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter135</name>
+				<pose>-15.536951651612823 -16.82042670631332 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter136</name>
+				<pose>-19.254378781660254 -15.423351498197322 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter137</name>
+				<pose>-21.92977642358833 -23.13448886276067 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter138</name>
+				<pose>-13.488567333763896 -19.287626980001388 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter139</name>
+				<pose>-20.48851020272831 -15.372837979078003 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter140</name>
+				<pose>-24.899691452768913 -15.726062223689256 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter141</name>
+				<pose>-16.459042040921048 -15.750021248919438 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter142</name>
+				<pose>-16.367457871656704 -17.88050864447612 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter143</name>
+				<pose>-13.075432055384733 -20.748322305617414 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter144</name>
+				<pose>-19.517724336773085 -24.858192905282653 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter145</name>
+				<pose>-22.310604310635036 -13.31178032749257 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter146</name>
+				<pose>-23.379209540696152 -14.271160163708565 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter147</name>
+				<pose>-11.088372277717244 -22.257456872648106 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter148</name>
+				<pose>-19.654216617243872 -20.047825419901763 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter149</name>
+				<pose>-19.719320565060563 -20.66921978442205 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter150</name>
+				<pose>-12.487890817606203 -17.120342958360446 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter151</name>
+				<pose>-18.071513247865063 -17.35927368410167 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter152</name>
+				<pose>-22.771315403299823 -17.65915578943059 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter153</name>
+				<pose>-10.36535618832323 -13.214675544246052 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter154</name>
+				<pose>-21.618634182635983 -23.33664846862633 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter155</name>
+				<pose>-24.136226078972953 -22.145467456091936 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter156</name>
+				<pose>-10.505340313473774 -11.79999263532235 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter157</name>
+				<pose>-15.707342678375596 -19.760225005383806 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter158</name>
+				<pose>-17.82164347000782 -13.919522331204366 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter159</name>
+				<pose>-22.718248292875735 -21.526994351320575 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter160</name>
+				<pose>-14.898350796462877 -12.629683503484522 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter161</name>
+				<pose>-12.057961380412088 -22.298562407171694 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter162</name>
+				<pose>-21.78909729308776 -22.307347048154497 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter163</name>
+				<pose>-12.624429701041594 -15.045223309085385 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter164</name>
+				<pose>-24.65260670466263 -10.958331533717244 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter165</name>
+				<pose>-20.264997595764417 -20.596492482333307 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter166</name>
+				<pose>-14.138432006527603 -20.337458327267765 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter167</name>
+				<pose>-24.35800690732443 -17.14725016990815 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter168</name>
+				<pose>-24.10581902521959 -21.97850014818481 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter169</name>
+				<pose>-17.960503914745004 -15.872129718775973 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter170</name>
+				<pose>-11.098171730324346 -18.63336074015465 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter171</name>
+				<pose>-13.34465822553819 -16.54978750211816 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter172</name>
+				<pose>-18.259754132942277 -17.47260771457814 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter173</name>
+				<pose>-15.883196224226996 -18.219323700993254 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter174</name>
+				<pose>-16.74146838792584 -11.24681618352237 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter175</name>
+				<pose>-16.682018756119454 -14.060648888456834 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter176</name>
+				<pose>-24.739641901704548 -11.727748050391256 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter177</name>
+				<pose>-24.473858622941478 -20.633623751140835 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter178</name>
+				<pose>-19.677113554640883 -23.13862940347502 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter179</name>
+				<pose>-22.994097943761545 -21.745671710531923 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter180</name>
+				<pose>-22.041181778097748 -12.593422183643822 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter181</name>
+				<pose>-24.806622219360456 -20.446224663312314 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter182</name>
+				<pose>-11.089504651729023 -24.507187985950978 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter183</name>
+				<pose>-19.989246806660017 -12.14971507925473 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter184</name>
+				<pose>-24.331290746095753 -10.411413921889455 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter185</name>
+				<pose>-12.6536973869454 -18.807180284241085 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter186</name>
+				<pose>-18.76989366399573 -22.958011631851996 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter187</name>
+				<pose>-18.49301410482787 -21.963100799204852 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter188</name>
+				<pose>-23.834608976121597 -14.356396035098454 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter189</name>
+				<pose>-15.767472556912672 -19.242252506018172 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter190</name>
+				<pose>-18.60855218357581 -16.7409476301469 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter191</name>
+				<pose>-12.86469502705534 -10.388772379190254 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter192</name>
+				<pose>-19.279260361357696 -23.656502930280574 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter193</name>
+				<pose>-24.494643939477704 -23.099014783088652 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter194</name>
+				<pose>-13.31540423334769 -12.508769720620343 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter195</name>
+				<pose>-19.67385348832581 -20.277592368783502 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter196</name>
+				<pose>-17.155196941870425 -10.677902089794387 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter197</name>
+				<pose>-24.70836290669005 -14.407050797254122 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter198</name>
+				<pose>-16.537206024152937 -17.757683071800372 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter199</name>
+				<pose>-14.3978333639431 -22.868631134736436 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+			<include>
+				<name>m_litter200</name>
+				<pose>-11.007617505191641 -11.039871254699587 0.025 0 0 0</pose>
+				<uri>model://m_litter</uri>
+			</include>
+		 
+	<!--end: generate litter locations-->
+	
+	<!--start: create boundary-->
+	<model name='boundary1'>
+		<static>1</static>
+		<pose>0 0 0 0 0 0</pose>
+		<link name='link'>
+			<collision name='collision1'>
+				<pose>-50.05 0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>0.1 100.1 1.919</size>
+					</box>
+				</geometry>
+			</collision>
+			
+			<visual name='visual1'>
+				<pose>-50.05 0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>0.1 100.1 1.919</size>
+					</box>
+				</geometry>
+			</visual>
+			
+			<collision name='collision2'>
+				<pose>50.05 0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>0.1 100.1 1.919</size>
+					</box>
+				</geometry>
+			</collision>
+			
+			<visual name='visual2'>
+				<pose>50.05 0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>0.1 100.1 1.919</size>
+					</box>
+				</geometry>
+			</visual>
+			
+			<collision name='collision3'>
+				<pose>0 -50.0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>100.10 0.1 1.919</size>
+					</box>
+				</geometry>
+			</collision>
+			
+			<visual name='visual3'>
+				<pose>0 -50.0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>100.10 0.1 1.919</size>
+					</box>
+				</geometry>
+			</visual>
+			
+			<collision name='collision4'>
+				<pose>0 50.0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>100.10 0.1 1.919</size>
+					</box>
+				</geometry>
+			</collision>
+			
+			<visual name='visual4'>
+				<pose>0 50.0 0.0 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>100.10 0.1 1.919</size>
+					</box>
+				</geometry>
+			</visual>
+		</link>
+	</model>
+	
+	
+	<!--
+	<include>
+		<uri>model://m_boundary10x10</uri>
+	</include>-->
+	<!--end: create boundary-->
+	
+	
+	
+	
+	<!--
+	
+	
+	<include>
+		<name>m_litter2</name>
+		<pose>1.2 0.2 0.025 0 0 0</pose>
+		<uri>model://m_litter</uri>
+	</include>
+	
+	 Populating world with Litter objects 
+	<population name='litter_population1'>
+		<model name='m_litter1'>
+			<include>
+				<uri>model://m_litter</uri>
+			</include>
+		</model>
+		<pose>4 0 0 0 0 0</pose><! 9.5 9.5 0.05>
+		<box>
+			<size>3 3 0.05</size>
+		</box>
+		<model_count>10</model_count>
+		<distribution>
+			<type>uniform</type>
+		</distribution>
+	</population>-->
+		<plugin name="wp_swarm" filename="libwp_swarm.so"/>
+	</world>
+</sdf>
