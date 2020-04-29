@@ -6255,6 +6255,6 @@
 			<type>uniform</type>
 		</distribution>
 	</population>-->
-		<plugin name="wp_swarm1" filename="libwp_swarm1.so"/>
+		<plugin name="wp_swarm" filename="libwp_swarm.so"/>
 	</world>
 </sdf>
