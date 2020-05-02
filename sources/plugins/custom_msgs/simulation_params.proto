@@ -6,6 +6,6 @@ message SimulationParams
     required string simulation_prefix = 2;
     required string params = 3;
     optional string params_file = 4 [default = ""];
-    optional string params_line = 5 [default = ""];
+    optional int32 params_line = 5 [default = 0];
     
 }

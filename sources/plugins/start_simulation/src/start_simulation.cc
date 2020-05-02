@@ -13,10 +13,12 @@ int main(int _argc, char **_argv)
 	std::string params_line{_argv[3]};
     std::string simulation_prefix{_argv[4]};
     
-    gazebo::msgs::Any params_msg;
-    params_msg.set_type(gazebo::msgs::Any::STRING);
-    params_msg.set_string_value(params_line
-             + ":" + params_file);
+    custom_msgs::msgs::SimulationParams params_msg;
+    params_msg.set_simulation_folder(simulation_folder);
+    params_msg.set_simulation_prefix(simulation_prefix);
+    params_msg.set_params("Default");
+    params_msg.set_params_file(params_file);
+    params_msg.set_params_line(std::stoi(params_line));
 
     //load gazebo
     gazebo::client::setup(_argc, _argv);
@@ -30,15 +32,15 @@ int main(int _argc, char **_argv)
 	sub_simulation_status = node->Subscribe("/simulation_status",cb_simulation_status);
 	
     //publisher for simulation parameters
-    gazebo::transport::PublisherPtr pub_simulation_params = node->Advertise<gazebo::msgs::Any>("/simulation_params");
+    gazebo::transport::PublisherPtr pub_simulation_params = node->Advertise<custom_msgs::msgs::SimulationParams>("/simulation_params");
 
 	while(!simulation_started){//busy wait
 		gazebo::common::Time::MSleep(100);
 		pub_simulation_params->Publish(params_msg);
-        std::cerr << "simulation_folder: " << simulation_folder << std::endl
-        << "params_file: " << params_file <<std::endl
-        << "params_line: " << params_line << std::endl
-        << "simulation_prefix: " << simulation_prefix << std::endl;
+        // std::cerr << "simulation_folder: " << simulation_folder << std::endl
+        // << "params_file: " << params_file <<std::endl
+        // << "params_line: " << params_line << std::endl
+        // << "simulation_prefix: " << simulation_prefix << std::endl;
 	}
 	
 	//Make sure to shut everything down

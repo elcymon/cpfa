@@ -71,7 +71,7 @@ port_shift=$6 #to prevent overlap with another gzserver of a different experimen
 swarmsize=$7
 
 simulation_folder=$8 #folder to save simulation results
-simulation_prefix=_$SGE_TASK_ID"_"$JOB_ID"_"$(date '+%Y-%m-%d-%H-%M-%S')
+simulation_prefix=_$(printf "%03d\n" $SGE_TASK_ID)"_"$JOB_ID"_"$(date '+%Y-%m-%d-%H-%M-%S')
 #there should be no repetition of server port or else they will overwrite each other. Adding 1 just to be safe
 port_number=$(( $SGE_TASK_ID + ( $port_shift + $param_line ) * 32 ))
 echo world: $world_name, swarmsize: $swarmsize
