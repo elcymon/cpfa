@@ -13,8 +13,9 @@
 #include <map>
 
 #include "simulation_params.pb.h"
+#include "robot.hh"
 
-using namespace std;
+//using namespace std;
 namespace gazebo
 {
 	typedef const boost::shared_ptr<

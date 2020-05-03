@@ -14,7 +14,7 @@ void gazebo::WP_Swarm::Load(physics::WorldPtr _parent, sdf::ElementPtr /*_sdf*/)
 void gazebo::WP_Swarm::cb_simulation_params(gazebo::ConstSimulationParamsPtr &params_msg)
 {
 	std::lock_guard<std::mutex> lock(this->mutex);	
-	fstream params_file(params_msg->params_file());
+	std::	fstream params_file(params_msg->params_file());
 	params_file.seekg(std::ios::beg);
 	std::string params_header,params;
 	std::vector<std::string> params_vec,params_header_vec;

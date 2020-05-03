@@ -9,22 +9,18 @@ include_directories(
   ${GAZEBO_INCLUDE_DIRS}
   ${SDF_INCLUDE_DIRS}
   ${CMAKE_CURRENT_BINARY_DIR}/custom_msgs
+  robot/src robot/include
+  include
   )
 link_directories(${GAZEBO_LIBRARY_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}/custom_msgs)
 
-#if(NOT TARGET custom_msgs)
-    add_subdirectory(custom_msgs)
-#endif(NOT TARGET custom_msgs)
-# header files directory
-include_directories(include)
+add_subdirectory(custom_msgs)
 
-# world plugin for robots simulation
-set(WP_SWARM src/wp_swarm.cc
-    src/wp_swarm_onupdate.cc
-    include/wp_swarm.hh)
+FILE(GLOB WP_SWARM src/*.cc include/*.hh
+        robot/src/*.cc robot/include/*.hh)
 
-add_library(wp_swarm SHARED ${WP_SWARM})
+add_library(wp_swarm SHARED ${WP_SWARM} )
 target_link_libraries(wp_swarm
     custom_msgs
     ${GAZEBO_LIBRARIES} pthread
